@@ -24,7 +24,7 @@
     "outputs": {
         "rgname": {
             "type": "string",
-            "value": "[resourceId('Microsoft.Resources/resourceGroups',concat('rg-box-', parameters('name')))]"
+            "value": "[resourceId('Microsoft.Resources/resourceGroups',concat('rg-box-', parameters('name'))).name]"
         }
     }
 }
