@@ -26,5 +26,5 @@ steps:
     subscriptionId: 'd8058b04-7da0-4499-b527-029c6d0158f7'
     location: 'West Europe'
     templateLocation: 'Linked artifact'
-    csmFile: 'vnetbox/virtualnetwork.json'
+    csmFile: 'vnetbox/rg.json'
     deploymentMode: 'Incremental'
