@@ -28,3 +28,6 @@ steps:
     templateLocation: 'Linked artifact'
     csmFile: 'vnetbox/rg.json'
     deploymentMode: 'Incremental'
+    deploymentOutputs: rgname
+
+- script: echo $(rgname)
