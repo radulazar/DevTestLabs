@@ -21,5 +21,10 @@
        }
    }
     ],
-    "outputs": {}
+    "outputs": {
+        "rgname": {
+            "type": "string",
+            "value": "[resourceId('Microsoft.Resources/resourceGroups',concat('rg-box-', parameters('name')))]"
+        }
+    }
 }
