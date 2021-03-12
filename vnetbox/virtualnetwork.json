@@ -10,14 +10,44 @@
     "functions": [],
     "variables": {},
     "resources": [
+                {
+            "apiVersion": "2020-07-01",
+            "name": "lb-int",
+            "type": "Microsoft.Network/loadBalancers",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Standard"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-env')]"
+            ],
+            "tags": {
+                "env": "guid"
+            },
+            "properties": {
+                "frontendIPConfigurations": [
+                    {
+                        "name": "lb-FrontEnd",
+                        "properties": {
+                            "privateIPAllocationMethod": "Static",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-env', 'Subnet-255-lb-fe')]"
+                            },
+                            "privateIPAddress": "10.0.255.5",
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ]
+            }
+        },
 
         {
-            "name": "vnet-box",
+            "name": "vnet-env",
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2019-11-01",
             "location": "[resourceGroup().location]",
             "tags": {
-                "displayName": "vnet-box",
+                "displayName": "vnet-env",
                 "envGuid": "[parameters('envGuid')]"
             },
             "properties": {
