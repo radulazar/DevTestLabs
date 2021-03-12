@@ -41,6 +41,7 @@ steps:
     location: 'West Europe'
     templateLocation: 'Linked artifact'
     csmFile: 'vnetbox/virtualnetwork.json'
+    overrideParameters: '-envGuid ''$(Output_envGuid)'''
     deploymentMode: 'Incremental'
 
 
