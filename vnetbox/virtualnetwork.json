@@ -2,21 +2,23 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "boxname":{
+        "envGuid":{
             "type": "string",
-            "defaultvalue": "[newGuid()]"
+            "defaultvalue": ""
         }
     },
     "functions": [],
     "variables": {},
     "resources": [
+
         {
-            "name": "[concat('vnet-box-', parameters('boxname'), '-test')]",
+            "name": "vnet-box",
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2019-11-01",
             "location": "[resourceGroup().location]",
             "tags": {
-                "displayName": "[concat('vnet-box-', parameters('boxname'))]"
+                "displayName": "vnet-box",
+                "envGuid": "[parameters('envGuid')]"
             },
             "properties": {
                 "addressSpace": {

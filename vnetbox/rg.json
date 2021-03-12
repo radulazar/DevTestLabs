@@ -25,6 +25,10 @@
         "rgname": {
             "type": "string",
             "value": "[concat('rg-box-', parameters('name'))]"
+        },
+        "envGuid": {
+            "type": "string",
+            "value":"[parameters('name')]"
         }
     }
 }
