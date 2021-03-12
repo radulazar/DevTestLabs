@@ -23,7 +23,8 @@ steps:
     templateLocation: 'Linked artifact'
     csmFile: 'vnetbox/rg.json'
     deploymentMode: 'Incremental'
-
+    deploymentOutputs: rg-ArmOut
+    
 - task: PowerShell@2
   inputs:
     filePath: 'scripts/ReadOutputParameters.ps1'
@@ -41,7 +42,7 @@ steps:
     templateLocation: 'Linked artifact'
     csmFile: 'vnetbox/virtualnetwork.json'
     deploymentMode: 'Incremental'
-    deploymentOutputs: rg-ArmOut
+
 
 
 
