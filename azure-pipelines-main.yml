@@ -11,7 +11,7 @@ variables:
   
 steps: 
 
-- powershell: $env:BoxName = [guid]::NewGuid().Guid
+
 
 
 - task: AzureResourceManagerTemplateDeployment@3
