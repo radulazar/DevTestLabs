@@ -11,7 +11,7 @@ variables:
   
 steps: 
 
-- powershell: write-host $(BoxName)
+- powershell: $(BoxName) = newGuid().tostring()
 
 
 - task: AzureResourceManagerTemplateDeployment@3
