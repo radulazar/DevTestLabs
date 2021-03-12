@@ -11,7 +11,7 @@ variables:
   
 steps: 
 
-- powershell: $env:BoxName = [guid]::NewGuid().Guid
+
 
 
 - task: AzureResourceManagerTemplateDeployment@3
@@ -23,17 +23,10 @@ steps:
     templateLocation: 'Linked artifact'
     csmFile: 'vnetbox/rg.json'
     deploymentMode: 'Incremental'
-    deploymentOutputs: rgname
+    deploymentOutputs: rg-ArmOut
 
 
-
-- task: AzureResourceManagerTemplateDeployment@3
+- task: PowerShell@2
   inputs:
-    deploymentScope: 'Subscription'
-    azureResourceManagerConnection: 'radul (MCT)(d8058b04-7da0-4499-b527-029c6d0158f7)'
-    subscriptionId: 'd8058b04-7da0-4499-b527-029c6d0158f7'
-    location: 'West Europe'
-    templateLocation: 'Linked artifact'
-    csmFile: 'vnetbox/rg.json'
-    overrideParameters: '-name $(BoxName)'
-    deploymentMode: 'Incremental'
+    filePath: 'scripts/ReadOutputParameters.ps1'
+    arguments: '-armOutputString ''$(rg-ArmOut)'''
