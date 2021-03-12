@@ -6,7 +6,7 @@ pool:
 
 
 variables:
-  BoxName: Box1
+  BoxName: Box2
 
   
 steps: 
