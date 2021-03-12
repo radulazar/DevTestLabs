@@ -23,10 +23,27 @@ steps:
     templateLocation: 'Linked artifact'
     csmFile: 'vnetbox/rg.json'
     deploymentMode: 'Incremental'
-    deploymentOutputs: rg-ArmOut
-
 
 - task: PowerShell@2
   inputs:
     filePath: 'scripts/ReadOutputParameters.ps1'
     arguments: '-armOutputString ''$(rg-ArmOut)'''
+
+
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: 'radul (MCT)(d8058b04-7da0-4499-b527-029c6d0158f7)'
+    subscriptionId: 'd8058b04-7da0-4499-b527-029c6d0158f7'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: '$(Output_rgname)'
+    location: 'West Europe'
+    templateLocation: 'Linked artifact'
+    csmFile: 'vnetbox/virtualnetwork.json'
+    deploymentMode: 'Incremental'
+    deploymentOutputs: rg-ArmOut
+
+
+
+
+
