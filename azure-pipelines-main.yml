@@ -11,7 +11,7 @@ variables:
   
 steps: 
 
-- powershell: $(BoxName) = newGuid().tostring()
+- powershell: $(BoxName) = [guid]::NewGuid().Guid
 
 
 - task: AzureResourceManagerTemplateDeployment@3
