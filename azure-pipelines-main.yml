@@ -26,14 +26,10 @@ steps:
     deploymentOutputs: rgname
 
 
-- task: AzureResourceManagerTemplateDeployment@3
+- task: PowerShell@2
   inputs:
-    deploymentScope: 'Resource Group'
-    azureResourceManagerConnection: 'radul (MCT)(d8058b04-7da0-4499-b527-029c6d0158f7)'
-    subscriptionId: 'd8058b04-7da0-4499-b527-029c6d0158f7'
-    action: 'Create Or Update Resource Group'
-    resourceGroupName: '$(rgname)'
-    location: 'West Europe'
-    templateLocation: 'Linked artifact'
-    csmFile: 'vnetbox/virtualnetwork.json'
-    deploymentMode: 'Incremental'
+    targetType: 'inline'
+    script: |
+      $rgnameObj = $(rgname) | Convertfrom-json
+      Write-Host $rgnameObj.value
+      Write-Host $rgnameObj.type
