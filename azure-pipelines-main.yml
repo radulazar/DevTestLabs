@@ -11,7 +11,7 @@ variables:
   
 steps: 
 
-- script:  write-host $(BoxName)
+- powershell: write-host $(BoxName)
 
 
 - task: AzureResourceManagerTemplateDeployment@3
