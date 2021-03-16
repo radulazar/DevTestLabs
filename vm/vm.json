@@ -1,0 +1,136 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "adminPassword": {
+            "type": "secureString"
+        }
+    },
+    "functions": [],
+    "variables": {},
+    "resources": [
+
+
+             {
+            "name": "SRV1",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2020-12-01",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', 'SRV1-nic')]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_D2s_v3"
+                },
+                "storageProfile": {
+                    "osDisk": {
+
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType": "Standard_LRS"
+                        }
+                    },
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2019-datacenter-gensecond",
+                        "version": "latest"
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', 'SRV1-nic')]"
+                        }
+                    ]
+                },
+                "osProfile": {
+                    "computerName": "SRV1",
+                    "adminUsername": "adminbox",
+                    "adminPassword": "[parameters('adminPassword')]",
+                    "windowsConfiguration": {
+                        "enableAutomaticUpdates": false,
+                        "provisionVmAgent": true,
+                        "patchSettings": {
+                            "patchMode": "Manual"
+                        }
+                    }
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true
+                    }
+                }
+            },
+            "tags": {
+                "envGuid": "guid"
+            },
+            "zones": []
+        },
+                {
+            "apiVersion": "2020-07-01",
+            "name": "lb-int",
+            "type": "Microsoft.Network/loadBalancers",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Standard"
+            }
+        },
+                        {
+            "name": "SRV1-nic",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2018-10-01",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "SRV1-IP",
+                        "properties": {
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-env', 'Subnet-0')]"
+                            },
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "10.0.0.10",
+                            "privateIPAddressVersion": "IPv4",
+                            "loadBalancerBackendAddressPools": [
+ 
+                            ],
+                            "loadBalancerInboundNatRules": [
+                                {
+                                "id": "[resourceId('Microsoft.Network/loadBalancers/inboundNatRules','lb-int','rule')]",
+                                "name": "lbrule"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "tags": {
+                "envGuid": "guid"
+            }
+        },
+        {
+    "type": "Microsoft.Network/loadBalancers/inboundNatRules",
+    "apiVersion": "2020-08-01",
+    "name": "lb-int/rule",
+    "dependsOn": [
+        "[resourceId('Microsoft.Network/loadBalancers', 'lb-int')]"
+    ],
+    "properties": {
+        "frontendIPConfiguration": {
+            "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations','lb-int','lb-FrontEnd' )]"
+        },
+        "frontendPort": 3389,
+        "backendPort": 3389,
+        "enableFloatingIP": false,
+        "idleTimeoutInMinutes": 4,
+        "protocol": "Tcp",
+        "enableTcpReset": false
+    }
+}   
+    ],
+    "outputs": {}
+}

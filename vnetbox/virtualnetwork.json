@@ -22,7 +22,7 @@
                 "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-env')]"
             ],
             "tags": {
-                "env": "guid"
+                "envGuid": "[parameters('envGuid')]"
             },
             "properties": {
                 "frontendIPConfigurations": [
@@ -72,12 +72,54 @@
                     {
                         "name": "Subnet-255-lb-fe",
                         "properties": {
-                            "addressPrefix": "10.0.255.0/24"
+                            "addressPrefix": "10.0.255.0/24",
+                            "privateLinkServiceNetworkPolicies": "Disabled"
                         }
                     }
 
                 ]
             }
+        },
+        {
+            "apiVersion": "2019-04-01",
+            "type": "Microsoft.Network/privateLinkServices",
+            "name": "privlink",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "env": "guid"
+            },
+            "properties": {
+                "visibility": {
+                    "subscriptions": []
+                },
+                "autoApproval": {
+                    "subscriptions": []
+                },
+                "enableProxyProtocol": false,
+                "loadBalancerFrontendIpConfigurations": [
+                    {
+                        "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations','lb-int','lb-FrontEnd' )]"
+                    }
+                ],
+                "ipConfigurations": [
+                    {
+                        "name": "privlink-IP",
+                        "properties": {
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "10.0.255.10",
+                            "privateIPAddressVersion": "IPv4",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-env', 'Subnet-255-lb-fe')]"
+                            },
+                            "primary": true
+                        }
+                    }
+                ],
+                "privateEndpointConnections": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/loadBalancers', 'lb-int')]"
+            ]
         }
     ],
     "outputs": {}

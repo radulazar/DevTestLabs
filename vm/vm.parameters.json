@@ -1,0 +1,78 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "westeurope"
+        },
+        "networkInterfaceName": {
+            "value": "srv1323"
+        },
+        "subnetName": {
+            "value": "Subnet-0"
+        },
+        "virtualNetworkId": {
+            "value": "/subscriptions/d8058b04-7da0-4499-b527-029c6d0158f7/resourceGroups/rg-env-2542db8b-5f67-4f2d-a0c0-1c26644be745/providers/Microsoft.Network/virtualNetworks/vnet-env"
+        },
+        "virtualMachineName": {
+            "value": "SRV1"
+        },
+        "virtualMachineComputerName": {
+            "value": "SRV1"
+        },
+        "virtualMachineRG": {
+            "value": "rg-env-2542db8b-5f67-4f2d-a0c0-1c26644be745"
+        },
+        "osDiskType": {
+            "value": "Standard_LRS"
+        },
+        "virtualMachineSize": {
+            "value": "Standard_D2s_v3"
+        },
+        "adminUsername": {
+            "value": "adminradul"
+        },
+        "adminPassword": {
+            "value": null
+        },
+        "patchMode": {
+            "value": "AutomaticByOS"
+        },
+        "enableHotpatching": {
+            "value": false
+        },
+        "zone": {
+            "value": "1"
+        },
+        "autoShutdownStatus": {
+            "value": "Enabled"
+        },
+        "autoShutdownTime": {
+            "value": "19:00"
+        },
+        "autoShutdownTimeZone": {
+            "value": "UTC"
+        },
+        "autoShutdownNotificationStatus": {
+            "value": "Enabled"
+        },
+        "autoShutdownNotificationLocale": {
+            "value": "en"
+        },
+        "autoShutdownNotificationEmail": {
+            "value": "radu.lazar@live.com"
+        },
+        "loadBalancerId": {
+            "value": "/subscriptions/d8058b04-7da0-4499-b527-029c6d0158f7/resourceGroups/rg-env-2542db8b-5f67-4f2d-a0c0-1c26644be745/providers/Microsoft.Network/loadBalancers/lb-int"
+        },
+        "backendPoolId": {
+            "value": "/subscriptions/d8058b04-7da0-4499-b527-029c6d0158f7/resourceGroups/rg-env-2542db8b-5f67-4f2d-a0c0-1c26644be745/providers/Microsoft.Network/loadBalancers/lb-int/backendAddressPools/lb-int-backend-srv1"
+        },
+        "backendPoolName": {
+            "value": "lb-int-backend-srv1"
+        },
+        "loadBalancerRG": {
+            "value": "rg-env-2542db8b-5f67-4f2d-a0c0-1c26644be745"
+        }
+    }
+}

@@ -11,7 +11,7 @@
     "variables": {},
     "resources": [
     {
-       "name": "[concat('rg-box-', parameters('name'))]",
+       "name": "[concat('rg-env-', parameters('name'))]",
        "type": "Microsoft.Resources/resourceGroups",
        "apiVersion": "2019-10-01",
        "location": "westeurope",
@@ -24,7 +24,7 @@
     "outputs": {
         "rgname": {
             "type": "string",
-            "value": "[concat('rg-box-', parameters('name'))]"
+            "value": "[concat('rg-env-', parameters('name'))]"
         },
         "envGuid": {
             "type": "string",
