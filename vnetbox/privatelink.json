@@ -1,0 +1,58 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "resourceName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the private link service"
+            }
+        },
+        "location": {
+            "type": "string",
+            "metadata": {
+                "description": "The location of the private link service"
+            }
+        }
+    },
+    "resources": [
+        {
+            "apiVersion": "2019-04-01",
+            "type": "Microsoft.Network/privateLinkServices",
+            "name": "privlink",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "env": "guid"
+            },
+            "properties": {
+                "visibility": {
+                    "subscriptions": []
+                },
+                "autoApproval": {
+                    "subscriptions": []
+                },
+                "enableProxyProtocol": false,
+                "loadBalancerFrontendIpConfigurations": [
+                    {
+                        "id": "/subscriptions/d8058b04-7da0-4499-b527-029c6d0158f7/resourceGroups/rg-box-3179fbd2-692c-4cd6-b2b0-902121b1d265/providers/Microsoft.Network/loadBalancers/lb-int/frontendIPConfigurations/lb-FrontEnd"
+                    }
+                ],
+                "ipConfigurations": [
+                    {
+                        "name": "Dtllab1Subnet-1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "privateIPAddressVersion": "IPv4",
+                            "subnet": {
+                                "id": "/subscriptions/d8058b04-7da0-4499-b527-029c6d0158f7/resourceGroups/lab-rg/providers/Microsoft.Network/virtualNetworks/Dtllab1/subnets/Dtllab1Subnet"
+                            },
+                            "primary": false
+                        }
+                    }
+                ],
+                "privateEndpointConnections": []
+            },
+            "dependsOn": []
+        }
+    ]
+}

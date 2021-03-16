@@ -1,0 +1,8 @@
+Connect-AzAccount
+Get-AzContext
+Get-AzSubscription
+## deploy to AzSubscription
+New-AzSubscriptionDeployment -Location <location> -TemplateFile <path-to-template-or-bicep>
+
+## deploy to Resource Group
+New-AzResourceGroupDeployment -ResourceGroupName <resource-group-name> -TemplateFile <path-to-template-or-bicep>
