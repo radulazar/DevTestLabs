@@ -1,58 +1,41 @@
 {
-    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "resourceName": {
+        "envGuid": {
             "type": "string",
             "metadata": {
-                "description": "The name of the private link service"
-            }
-        },
-        "location": {
-            "type": "string",
-            "metadata": {
-                "description": "The location of the private link service"
-            }
+                "description": "description"
+            },
+            "defaultValue":""
         }
     },
+    "functions": [],
+    "variables": {},
     "resources": [
-        {
-            "apiVersion": "2019-04-01",
-            "type": "Microsoft.Network/privateLinkServices",
-            "name": "privlink",
+                {
             "location": "[resourceGroup().location]",
-            "tags": {
-                "env": "guid"
-            },
+            "name": "[concat('priv-endpoint-',parameters('envGuid'))]",
+            "type": "Microsoft.Network/privateEndpoints",
+            "apiVersion": "2020-03-01",
             "properties": {
-                "visibility": {
-                    "subscriptions": []
+                "subnet": {
+                    "id": "/subscriptions/d8058b04-7da0-4499-b527-029c6d0158f7/resourceGroups/vnet-test-rg/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/vnet-hub-subnet1"
                 },
-                "autoApproval": {
-                    "subscriptions": []
-                },
-                "enableProxyProtocol": false,
-                "loadBalancerFrontendIpConfigurations": [
+                "privateLinkServiceConnections": [
                     {
-                        "id": "/subscriptions/d8058b04-7da0-4499-b527-029c6d0158f7/resourceGroups/rg-box-3179fbd2-692c-4cd6-b2b0-902121b1d265/providers/Microsoft.Network/loadBalancers/lb-int/frontendIPConfigurations/lb-FrontEnd"
-                    }
-                ],
-                "ipConfigurations": [
-                    {
-                        "name": "Dtllab1Subnet-1",
+                        "name": "[resourceId('Microsoft.Network/privateEndpoints',concat('priv-endpoint-',parameters('envGuid')))]",
                         "properties": {
-                            "privateIPAllocationMethod": "Dynamic",
-                            "privateIPAddressVersion": "IPv4",
-                            "subnet": {
-                                "id": "/subscriptions/d8058b04-7da0-4499-b527-029c6d0158f7/resourceGroups/lab-rg/providers/Microsoft.Network/virtualNetworks/Dtllab1/subnets/Dtllab1Subnet"
-                            },
-                            "primary": false
+                            "privateLinkServiceId": "[resourceId('Microsoft.Network/privateLinkServices',concat('privlink-',parameters('envGuid')))]"
+
                         }
                     }
-                ],
-                "privateEndpointConnections": []
+                ]
             },
-            "dependsOn": []
+            "tags": {
+                "env": "guid"
+            }
         }
-    ]
+    ],
+    "outputs": {}
 }

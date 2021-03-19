@@ -4,6 +4,9 @@
     "parameters": {
         "adminPassword": {
             "type": "secureString"
+        },
+        "envGuid":{
+            "type": "string"
         }
     },
     "functions": [],
@@ -70,7 +73,7 @@
         },
                 {
             "apiVersion": "2020-07-01",
-            "name": "lb-int",
+            "name": "[concat('lb-int-',parameters('envGuid'))]",
             "type": "Microsoft.Network/loadBalancers",
             "location": "[resourceGroup().location]",
             "sku": {
@@ -83,6 +86,9 @@
             "apiVersion": "2018-10-01",
             "location": "[resourceGroup().location]",
             "dependsOn": [
+
+                    "[resourceId('Microsoft.Network/loadBalancers/inboundNatRules',concat('lb-int-',parameters('envGuid')),'inboundNatRule')]"
+ 
             ],
             "properties": {
                 "ipConfigurations": [
@@ -90,7 +96,7 @@
                         "name": "SRV1-IP",
                         "properties": {
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-env', 'Subnet-0')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat('vnet-env-',parameters('envGuid')), 'Subnet-0')]"
                             },
                             "privateIPAllocationMethod": "Static",
                             "privateIPAddress": "10.0.0.10",
@@ -100,8 +106,8 @@
                             ],
                             "loadBalancerInboundNatRules": [
                                 {
-                                "id": "[resourceId('Microsoft.Network/loadBalancers/inboundNatRules','lb-int','rule')]",
-                                "name": "lbrule"
+                                "id": "[resourceId('Microsoft.Network/loadBalancers/inboundNatRules',concat('lb-int-',parameters('envGuid')),'inboundNatRule')]",
+                                "name": "inboundNatRule"
                                 }
                             ]
                         }
@@ -115,13 +121,13 @@
         {
     "type": "Microsoft.Network/loadBalancers/inboundNatRules",
     "apiVersion": "2020-08-01",
-    "name": "lb-int/rule",
+    "name": "[concat('lb-int-',parameters('envGuid'),'/inboundNatRule')]",
     "dependsOn": [
-        "[resourceId('Microsoft.Network/loadBalancers', 'lb-int')]"
+        "[resourceId('Microsoft.Network/loadBalancers', concat('lb-int-',parameters('envGuid')))]"
     ],
     "properties": {
         "frontendIPConfiguration": {
-            "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations','lb-int','lb-FrontEnd' )]"
+            "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations',concat('lb-int-',parameters('envGuid')),'lb-FrontEnd' )]"
         },
         "frontendPort": 3389,
         "backendPort": 3389,
@@ -130,7 +136,8 @@
         "protocol": "Tcp",
         "enableTcpReset": false
     }
-}   
+}
+   
     ],
     "outputs": {}
 }

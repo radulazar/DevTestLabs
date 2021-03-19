@@ -12,14 +12,14 @@
     "resources": [
                 {
             "apiVersion": "2020-07-01",
-            "name": "lb-int",
+            "name": "[concat('lb-int-',parameters('envGuid'))]",
             "type": "Microsoft.Network/loadBalancers",
             "location": "[resourceGroup().location]",
             "sku": {
                 "name": "Standard"
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-env')]"
+                "[resourceId('Microsoft.Network/virtualNetworks', concat('vnet-env-',parameters('envGuid')))]"
             ],
             "tags": {
                 "envGuid": "[parameters('envGuid')]"
@@ -31,7 +31,7 @@
                         "properties": {
                             "privateIPAllocationMethod": "Static",
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-env', 'Subnet-255-lb-fe')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat('vnet-env-',parameters('envGuid')), 'Subnet-255-lb-fe')]"
                             },
                             "privateIPAddress": "10.0.255.5",
                             "privateIPAddressVersion": "IPv4"
@@ -42,7 +42,7 @@
         },
 
         {
-            "name": "vnet-env",
+            "name": "[concat('vnet-env-',parameters('envGuid'))]",
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2019-11-01",
             "location": "[resourceGroup().location]",
@@ -83,7 +83,7 @@
         {
             "apiVersion": "2019-04-01",
             "type": "Microsoft.Network/privateLinkServices",
-            "name": "privlink",
+            "name": "[concat('privlink-',parameters('envGuid'))]",
             "location": "[resourceGroup().location]",
             "tags": {
                 "env": "guid"
@@ -98,7 +98,7 @@
                 "enableProxyProtocol": false,
                 "loadBalancerFrontendIpConfigurations": [
                     {
-                        "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations','lb-int','lb-FrontEnd' )]"
+                        "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations',concat('lb-int-',parameters('envGuid')),'lb-FrontEnd' )]"
                     }
                 ],
                 "ipConfigurations": [
@@ -109,7 +109,7 @@
                             "privateIPAddress": "10.0.255.10",
                             "privateIPAddressVersion": "IPv4",
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'vnet-env', 'Subnet-255-lb-fe')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat('vnet-env-',parameters('envGuid')), 'Subnet-255-lb-fe')]"
                             },
                             "primary": true
                         }
@@ -118,7 +118,7 @@
                 "privateEndpointConnections": []
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Network/loadBalancers', 'lb-int')]"
+                "[resourceId('Microsoft.Network/loadBalancers', concat('lb-int-',parameters('envGuid')))]"
             ]
         }
     ],

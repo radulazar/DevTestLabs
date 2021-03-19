@@ -2,7 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "name":{
+        "newguid":{
             "type": "string",
             "defaultValue":"[newGuid()]"
         }
@@ -11,7 +11,7 @@
     "variables": {},
     "resources": [
     {
-       "name": "[concat('rg-env-', parameters('name'))]",
+       "name": "[concat('rg-env-', parameters('newguid'))]",
        "type": "Microsoft.Resources/resourceGroups",
        "apiVersion": "2019-10-01",
        "location": "westeurope",
@@ -24,11 +24,11 @@
     "outputs": {
         "rgname": {
             "type": "string",
-            "value": "[concat('rg-env-', parameters('name'))]"
+            "value": "[concat('rg-env-', parameters('newguid'))]"
         },
         "envGuid": {
             "type": "string",
-            "value":"[parameters('name')]"
+            "value":"[parameters('newguid')]"
         }
     }
 }
