@@ -30,7 +30,7 @@
             "apiVersion": "2020-12-01",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', parameters('VMName'), '-nic')]"
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('VMName'), '.nic')]"
             ],
             "properties": {
                 "hardwareProfile": {
@@ -51,7 +51,7 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('VMName'),'-nic'))]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('VMName'),'.nic'))]"
                         }
                     ]
                 },
@@ -69,7 +69,7 @@
         },
                 {
             "apiVersion": "2020-07-01",
-            "name": "[concat('lb-int-',parameters('envGuid'))]",
+            "name": "[concat(parameters('envGuid'),'.lb')]",
             "type": "Microsoft.Network/loadBalancers",
             "location": "[resourceGroup().location]",
             "sku": {
@@ -77,13 +77,13 @@
             }
         },
                         {
-            "name": "[concat(parameters('VMName'),'-nic')]",
+            "name": "[concat(parameters('VMName'),'.nic')]",
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2018-10-01",
             "location": "[resourceGroup().location]",
             "dependsOn": [
 
-                    "[resourceId('Microsoft.Network/loadBalancers/inboundNatRules',concat('lb-int-',parameters('envGuid')),concat('inboundNatRule-rdp-',parameters('VMName')))]"
+                    "[resourceId('Microsoft.Network/loadBalancers/inboundNatRules',concat(parameters('envGuid'),'.lb'),concat('inboundNatRule-rdp-',parameters('VMName')))]"
  
             ],
             "properties": {
@@ -92,7 +92,7 @@
                         "name": "[concat(parameters('VMName'),'-IP')]",
                         "properties": {
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat('vnet-env-',parameters('envGuid')), 'Subnet-0-Box')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat(parameters('envGuid'),'.vnet'), 'subnet-0-box')]"
                             },
                             "privateIPAllocationMethod": "Static",
                             "privateIPAddress": "[concat('10.0.0.',parameters('vmIndex'))]",
@@ -102,7 +102,7 @@
                             ],
                             "loadBalancerInboundNatRules": [
                                 {
-                                "id": "[resourceId('Microsoft.Network/loadBalancers/inboundNatRules',concat('lb-int-',parameters('envGuid')),concat('inboundNatRule-rdp-',parameters('VMName')))]",
+                                "id": "[resourceId('Microsoft.Network/loadBalancers/inboundNatRules',concat(parameters('envGuid'),'.lb'),concat('inboundNatRule-rdp-',parameters('VMName')))]",
                                 "name": "[concat('inboundNatRule-rdp-',parameters('VMName'))]"
                                 }
                             ]
@@ -117,13 +117,13 @@
         {
     "type": "Microsoft.Network/loadBalancers/inboundNatRules",
     "apiVersion": "2020-08-01",
-    "name": "[concat('lb-int-',parameters('envGuid'),'/inboundNatRule-rdp-',parameters('VMName'))]",
+    "name": "[concat(parameters('envGuid'),'.lb/inboundNatRule-rdp-',parameters('VMName'))]",
     "dependsOn": [
-        "[resourceId('Microsoft.Network/loadBalancers', concat('lb-int-',parameters('envGuid')))]"
+        "[resourceId('Microsoft.Network/loadBalancers', concat(parameters('envGuid'),'.lb'))]"
     ],
     "properties": {
         "frontendIPConfiguration": {
-            "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations',concat('lb-int-',parameters('envGuid')),concat('lb-fe-',parameters('vmIndex')) )]"
+            "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations',concat(parameters('envGuid'),'.lb'),concat('lb-fe-',parameters('vmIndex')) )]"
         },
         "frontendPort": 3389,
         "backendPort": 3389,

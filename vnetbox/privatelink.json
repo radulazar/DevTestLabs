@@ -21,7 +21,7 @@
     "resources": [
                 {
             "location": "[resourceGroup().location]",
-            "name": "[concat('priv-endpoint-',parameters('vmIndex'),'-',parameters('envGuid'))]",
+            "name": "[concat(parameters('envGuid'),'.pendp.',parameters('vmIndex'))]",
             "type": "Microsoft.Network/privateEndpoints",
             "apiVersion": "2020-03-01",
             "properties": {
@@ -30,9 +30,9 @@
                 },
                 "privateLinkServiceConnections": [
                     {
-                        "name": "[resourceId('Microsoft.Network/privateEndpoints',concat('priv-endpoint-',parameters('envGuid')))]",
+                        "name": "[resourceId('Microsoft.Network/privateEndpoints',concat(parameters('envGuid'),'.pendp',parameters('vmIndex')))]",
                         "properties": {
-                            "privateLinkServiceId": "[resourceId('Microsoft.Network/privateLinkServices',concat('privlink-',parameters('vmIndex'),'-',parameters('envGuid')))]"
+                            "privateLinkServiceId": "[resourceId('Microsoft.Network/privateLinkServices',concat(parameters('envGuid'),'.plink.',parameters('vmIndex')))]"
 
                         }
                     }
@@ -46,7 +46,7 @@
     "outputs": {
         "privEndpoint-NIC": {
             "type": "object",
-            "value": "[reference(resourceId('Microsoft.Network/privateEndpoints',concat('priv-endpoint-',parameters('vmIndex'),'-',parameters('envGuid')))).networkInterfaces[0]]"
+            "value": "[reference(resourceId('Microsoft.Network/privateEndpoints',concat(parameters('envGuid'),'.pendp.',parameters('vmIndex')))).networkInterfaces[0]]"
         }
     }
 }
