@@ -8,6 +8,12 @@
                 "description": "description"
             },
             "defaultValue":""
+        },
+        "vmIndex": {
+            "type": "string",
+            "metadata": {
+                "description": "description"
+            }
         }
     },
     "functions": [],
@@ -15,18 +21,18 @@
     "resources": [
                 {
             "location": "[resourceGroup().location]",
-            "name": "[concat('priv-endpoint-',parameters('envGuid'))]",
+            "name": "[concat('priv-endpoint-',parameters('vmIndex'),'-',parameters('envGuid'))]",
             "type": "Microsoft.Network/privateEndpoints",
             "apiVersion": "2020-03-01",
             "properties": {
                 "subnet": {
-                    "id": "/subscriptions/d8058b04-7da0-4499-b527-029c6d0158f7/resourceGroups/vnet-test-rg/providers/Microsoft.Network/virtualNetworks/vnet-hub/subnets/vnet-hub-subnet1"
+                    "id": "/subscriptions/d8058b04-7da0-4499-b527-029c6d0158f7/resourceGroups/OnPremConnect-rg/providers/Microsoft.Network/virtualNetworks/OnPremConnect-vNet/subnets/192.168.1.0_24"
                 },
                 "privateLinkServiceConnections": [
                     {
                         "name": "[resourceId('Microsoft.Network/privateEndpoints',concat('priv-endpoint-',parameters('envGuid')))]",
                         "properties": {
-                            "privateLinkServiceId": "[resourceId('Microsoft.Network/privateLinkServices',concat('privlink-',parameters('envGuid')))]"
+                            "privateLinkServiceId": "[resourceId('Microsoft.Network/privateLinkServices',concat('privlink-',parameters('vmIndex'),'-',parameters('envGuid')))]"
 
                         }
                     }
@@ -37,5 +43,10 @@
             }
         }
     ],
-    "outputs": {}
+    "outputs": {
+        "privEndpoint-NIC": {
+            "type": "object",
+            "value": "[reference(resourceId('Microsoft.Network/privateEndpoints',concat('priv-endpoint-',parameters('vmIndex'),'-',parameters('envGuid')))).networkInterfaces[0]]"
+        }
+    }
 }

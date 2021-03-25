@@ -27,16 +27,39 @@
             "properties": {
                 "frontendIPConfigurations": [
                     {
-                        "name": "lb-FrontEnd",
+                        "name": "lb-fe",
                         "properties": {
                             "privateIPAllocationMethod": "Static",
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat('vnet-env-',parameters('envGuid')), 'Subnet-255-lb-fe')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat('vnet-env-',parameters('envGuid')), 'Subnet-1-lb-fe')]"
                             },
-                            "privateIPAddress": "10.0.255.5",
+                            "privateIPAddress": "10.0.1.5",
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    },
+                                        {
+                        "name": "lb-fe-10",
+                        "properties": {
+                            "privateIPAllocationMethod": "Static",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat('vnet-env-',parameters('envGuid')), 'Subnet-1-lb-fe')]"
+                            },
+                            "privateIPAddress": "10.0.1.10",
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    },
+                    {
+                        "name": "lb-fe-11",
+                        "properties": {
+                            "privateIPAllocationMethod": "Static",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat('vnet-env-',parameters('envGuid')), 'Subnet-1-lb-fe')]"
+                            },
+                            "privateIPAddress": "10.0.1.11",
                             "privateIPAddressVersion": "IPv4"
                         }
                     }
+
                 ]
             }
         },
@@ -56,21 +79,27 @@
                         "10.0.0.0/16"
                     ]
                 },
+                "dhcpOptions": {
+                    "dnsServers": [
+                        "10.0.0.10"
+                    ]
+                },
                 "subnets": [
                     {
-                        "name": "Subnet-0",
+                        "name": "Subnet-0-Box",
                         "properties": {
                             "addressPrefix": "10.0.0.0/24"
                         }
                     },
                     {
-                        "name": "Subnet-1",
+                        "name": "Subnet-1-lb-fe",
                         "properties": {
-                            "addressPrefix": "10.0.1.0/24"
+                            "addressPrefix": "10.0.1.0/24",
+                            "privateLinkServiceNetworkPolicies": "Disabled"
                         }
                     },
                     {
-                        "name": "Subnet-255-lb-fe",
+                        "name": "Subnet-255-privlink",
                         "properties": {
                             "addressPrefix": "10.0.255.0/24",
                             "privateLinkServiceNetworkPolicies": "Disabled"
@@ -80,10 +109,10 @@
                 ]
             }
         },
-        {
+                        {
             "apiVersion": "2019-04-01",
             "type": "Microsoft.Network/privateLinkServices",
-            "name": "[concat('privlink-',parameters('envGuid'))]",
+            "name": "[concat('privlink-10-',parameters('envGuid'))]",
             "location": "[resourceGroup().location]",
             "tags": {
                 "env": "guid"
@@ -98,18 +127,59 @@
                 "enableProxyProtocol": false,
                 "loadBalancerFrontendIpConfigurations": [
                     {
-                        "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations',concat('lb-int-',parameters('envGuid')),'lb-FrontEnd' )]"
+                        "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations',concat('lb-int-',parameters('envGuid')), 'lb-fe-10')]"
                     }
                 ],
                 "ipConfigurations": [
                     {
-                        "name": "privlink-IP",
+                        "name": "privlink-IP-10",
                         "properties": {
                             "privateIPAllocationMethod": "Static",
                             "privateIPAddress": "10.0.255.10",
                             "privateIPAddressVersion": "IPv4",
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat('vnet-env-',parameters('envGuid')), 'Subnet-255-lb-fe')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat('vnet-env-',parameters('envGuid')), 'Subnet-255-privlink')]"
+                            },
+                            "primary": true
+                        }
+                    }
+                ],
+                "privateEndpointConnections": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/loadBalancers', concat('lb-int-',parameters('envGuid')))]"
+            ]
+        },
+                                {
+            "apiVersion": "2019-04-01",
+            "type": "Microsoft.Network/privateLinkServices",
+            "name": "[concat('privlink-11-',parameters('envGuid'))]",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "env": "guid"
+            },
+            "properties": {
+                "visibility": {
+                    "subscriptions": []
+                },
+                "autoApproval": {
+                    "subscriptions": []
+                },
+                "enableProxyProtocol": false,
+                "loadBalancerFrontendIpConfigurations": [
+                    {
+                        "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations',concat('lb-int-',parameters('envGuid')), 'lb-fe-11')]"
+                    }
+                ],
+                "ipConfigurations": [
+                    {
+                        "name": "privlink-IP-11",
+                        "properties": {
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "10.0.255.11",
+                            "privateIPAddressVersion": "IPv4",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat('vnet-env-',parameters('envGuid')), 'Subnet-255-privlink')]"
                             },
                             "primary": true
                         }
@@ -121,6 +191,7 @@
                 "[resourceId('Microsoft.Network/loadBalancers', concat('lb-int-',parameters('envGuid')))]"
             ]
         }
+
     ],
     "outputs": {}
 }

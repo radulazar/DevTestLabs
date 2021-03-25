@@ -6,3 +6,27 @@ New-AzSubscriptionDeployment -Location <location> -TemplateFile <path-to-templat
 
 ## deploy to Resource Group
 New-AzResourceGroupDeployment -ResourceGroupName <resource-group-name> -TemplateFile <path-to-template-or-bicep>
+
+
+1.
+New-AzSubscriptionDeployment -Location westeurope -TemplateFile .\vnetbox\rg.json
+
+# create Resource Group
+New-AzSubscriptionDeployment -Location 'West Europe' -TemplateFile .\vnetbox\rg.json
+$rgname = "..
+$envGuid = "..
+# Create Virtual Network
+New-AzResourceGroupDeployment -ResourceGroupName $rgname -envGuid $envGuid -TemplateFile .\vnetbox\virtualnetwork.json
+
+New-AzResourceGroupDeployment -ResourceGroupName $rgname -envGuid $envGuid -vmname $vmname -vmindex $vmindex -TemplateFile .\vnetbox\lb-frontend-ip.json 
+
+# Create VM
+$pass = ConvertTo-SecureString "Windows1test" -AsPlainText -Force
+New-AzResourceGroupDeployment -ResourceGroupName $rgname -envguid $envGuid -vmname $vmname -vmindex $vmIndex -TemplateFile .\vm\vm.json
+
+# Create Private Endpoint in existing vnet. Private Endpoint Network Policies must be disabled for that vnet. You can create a Private Endpoint in the portal to auto-disable the policy
+New-AzResourceGroupDeployment -ResourceGroupName $rgname -envGuid $envGuid -vmIndex $vmIndex -TemplateFile .\vnetbox\privatelink.json
+
+
+$nic = Get-AzNetworkInterface -name priv-endpoint-e16b29ed-a499-4b62-8ab3-5a0ec.nic.318ac4fa-72c1-43de-ab93-11cb3d0cb5f6 
+$nic.IpConfigurations[0].PrivateIpAddress

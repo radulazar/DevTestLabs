@@ -1,0 +1,59 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "envGuid": {
+            "type": "string",
+            "metadata": {
+                "description": "description"
+            }
+        },
+        "vmName": {
+            "type": "string",
+            "metadata": {
+                "description": "description"
+            }
+        },
+        "vmIndex": {
+            "type": "string",
+            "metadata": {
+                "description": "description"
+            }
+        }
+    },
+    "functions": [],
+    "variables": {},
+    "resources": [
+                    {
+            "apiVersion": "2020-07-01",
+            "name": "[concat('lb-int-',parameters('envGuid'))]",
+            "type": "Microsoft.Network/loadBalancers",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Standard"
+            },
+            "dependsOn": [
+                
+            ],
+            "tags": {
+                "envGuid": "[parameters('envGuid')]"
+            },
+            "properties": {
+                "frontendIPConfigurations": [
+                    {
+                        "name": "[concat('lb-FrontEnd-', parameters('vmName'),'-',parameters('vmIndex'))]",
+                        "properties": {
+                            "privateIPAllocationMethod": "Static",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat('vnet-env-',parameters('envGuid')), 'Subnet-255-lb-fe')]"
+                            },
+                            "privateIPAddress": "[concat('10.0.255.', parameters('vmIndex'))]",
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ]
+            }
+        }    
+    ],
+    "outputs": {}
+}

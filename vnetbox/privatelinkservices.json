@@ -1,0 +1,64 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "envguid": {
+            "type": "string",
+            "metadata": {
+                "description": "description"
+            }
+        },
+        "vmname": {
+            "type": "string",
+            "metadata": {
+                "description": "description"
+            }
+        }
+    },
+    "functions": [],
+    "variables": {},
+    "resources": [
+                {
+            "apiVersion": "2019-04-01",
+            "type": "Microsoft.Network/privateLinkServices",
+            "name": "[concat('privlink-',parameters('vmname'),'-',parameters('envGuid'))]",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "env": "guid"
+            },
+            "properties": {
+                "visibility": {
+                    "subscriptions": []
+                },
+                "autoApproval": {
+                    "subscriptions": []
+                },
+                "enableProxyProtocol": false,
+                "loadBalancerFrontendIpConfigurations": [
+                    {
+                        "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations',concat('lb-int-',parameters('envGuid')), concat('lb-FrontEnd-',parameters('vmname')))]"
+                    }
+                ],
+                "ipConfigurations": [
+                    {
+                        "name": "privlink-IP",
+                        "properties": {
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "10.0.255.100",
+                            "privateIPAddressVersion": "IPv4",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat('vnet-env-',parameters('envGuid')), 'Subnet-255-lb-fe')]"
+                            },
+                            "primary": true
+                        }
+                    }
+                ],
+                "privateEndpointConnections": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/loadBalancers', concat('lb-int-',parameters('envGuid')))]"
+            ]
+        }
+    ],
+    "outputs": {}
+}
