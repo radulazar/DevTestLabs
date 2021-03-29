@@ -1,23 +1,18 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
 
-trigger: 
-- main
+trigger: none
 
-pool:
-  vmImage: ubuntu-latest
+pool: 
+  vmimage: windows-latest
 
-steps:
-- script: echo Hello, world!
 
-  displayName: 'Run a one-line script'
+variables:
+  BoxName: Box2
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+  
+steps: 
+
+
+
 
 - task: AzureResourceManagerTemplateDeployment@3
   inputs:
@@ -28,6 +23,29 @@ steps:
     templateLocation: 'Linked artifact'
     csmFile: 'vnetbox/rg.json'
     deploymentMode: 'Incremental'
-    deploymentOutputs: rgname
+    deploymentOutputs: rg-ArmOut
+    
+- task: PowerShell@2
+  inputs:
+    filePath: 'scripts/ReadOutputParameters.ps1'
+    arguments: '-armOutputString ''$(rg-ArmOut)'''
 
-- script: echo $(rgname)
+
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: 'radul (MCT)(d8058b04-7da0-4499-b527-029c6d0158f7)'
+    subscriptionId: 'd8058b04-7da0-4499-b527-029c6d0158f7'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: '$(Output_rgname)'
+    location: 'West Europe'
+    templateLocation: 'Linked artifact'
+    csmFile: 'vnetbox/virtualnetwork.json'
+    overrideParameters: '-envGuid ''$(Output_envGuid)'''
+    deploymentMode: 'Incremental'
+
+
+
+
+
+

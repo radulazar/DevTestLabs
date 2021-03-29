@@ -2,10 +2,8 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "adminPassword": {
-            "type": "secureString"
-        },
-        "envGuid":{
+
+        "guid":{
             "type": "string"
         },
         "VMName": {
@@ -13,6 +11,12 @@
             "metadata": {
                 "description": "description"
             }
+},
+"vmIndex": {
+    "type": "string",
+    "metadata": {
+        "description": "Private IP of the VM. Needs to be in 10.0.0.x subnet"
+    }
 }
     },
     "functions": [],
@@ -21,12 +25,12 @@
 
 
              {
-            "name": "[parameters('VMName')]",
+            "name": "[concat(parameters('VMName'),'1')]",
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2020-12-01",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', parameters('VMName'), '-nic')]"
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('VMName'), '.nic')]"
             ],
             "properties": {
                 "hardwareProfile": {
@@ -41,31 +45,17 @@
                         }
                     },
                     "imageReference": {
-                        "publisher": "MicrosoftWindowsServer",
-                        "offer": "WindowsServer",
-                        "sku": "2019-datacenter-gensecond",
-                        "version": "latest"
+                        "id": "[concat('/subscriptions/d8058b04-7da0-4499-b527-029c6d0158f7/resourceGroups/BoxImages-rg/providers/Microsoft.Compute/galleries/BoxImages/images/',parameters('VMName'))]"
                     }
                 },
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('VMName'),'-nic')]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('VMName'),'.nic'))]"
                         }
                     ]
                 },
-                "osProfile": {
-                    "computerName": "[parameters('VMName')]",
-                    "adminUsername": "adminbox",
-                    "adminPassword": "[parameters('adminPassword')]",
-                    "windowsConfiguration": {
-                        "enableAutomaticUpdates": false,
-                        "provisionVmAgent": true,
-                        "patchSettings": {
-                            "patchMode": "Manual"
-                        }
-                    }
-                },
+
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": true
@@ -73,13 +63,13 @@
                 }
             },
             "tags": {
-                "envGuid": "guid"
+                "guid": "[parameters('guid')]"
             },
             "zones": []
         },
                 {
             "apiVersion": "2020-07-01",
-            "name": "[concat('lb-int-',parameters('envGuid'))]",
+            "name": "[concat(parameters('guid'),'.lb')]",
             "type": "Microsoft.Network/loadBalancers",
             "location": "[resourceGroup().location]",
             "sku": {
@@ -87,13 +77,13 @@
             }
         },
                         {
-            "name": "[concat(parameters('VMName'),'-nic')]",
+            "name": "[concat(parameters('VMName'),'.nic')]",
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2018-10-01",
             "location": "[resourceGroup().location]",
             "dependsOn": [
 
-                    "[resourceId('Microsoft.Network/loadBalancers/inboundNatRules',concat('lb-int-',parameters('envGuid')),'inboundNatRule')]"
+                    "[resourceId('Microsoft.Network/loadBalancers/inboundNatRules',concat(parameters('guid'),'.lb'),concat('inboundNatRule-rdp-',parameters('VMName')))]"
  
             ],
             "properties": {
@@ -102,18 +92,18 @@
                         "name": "[concat(parameters('VMName'),'-IP')]",
                         "properties": {
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat('vnet-env-',parameters('envGuid')), 'Subnet-0')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat(parameters('guid'),'.vnet'), 'subnet-0-box')]"
                             },
                             "privateIPAllocationMethod": "Static",
-                            "privateIPAddress": "10.0.0.10",
+                            "privateIPAddress": "[concat('10.0.0.',parameters('vmIndex'))]",
                             "privateIPAddressVersion": "IPv4",
                             "loadBalancerBackendAddressPools": [
  
                             ],
                             "loadBalancerInboundNatRules": [
                                 {
-                                "id": "[resourceId('Microsoft.Network/loadBalancers/inboundNatRules',concat('lb-int-',parameters('envGuid')),'inboundNatRule')]",
-                                "name": "inboundNatRule"
+                                "id": "[resourceId('Microsoft.Network/loadBalancers/inboundNatRules',concat(parameters('guid'),'.lb'),concat('inboundNatRule-rdp-',parameters('VMName')))]",
+                                "name": "[concat('inboundNatRule-rdp-',parameters('VMName'))]"
                                 }
                             ]
                         }
@@ -121,19 +111,19 @@
                 ]
             },
             "tags": {
-                "envGuid": "guid"
+                "guid": "[parameters('guid')]"
             }
         },
         {
     "type": "Microsoft.Network/loadBalancers/inboundNatRules",
     "apiVersion": "2020-08-01",
-    "name": "[concat('lb-int-',parameters('envGuid'),'/inboundNatRule')]",
+    "name": "[concat(parameters('guid'),'.lb/inboundNatRule-rdp-',parameters('VMName'))]",
     "dependsOn": [
-        "[resourceId('Microsoft.Network/loadBalancers', concat('lb-int-',parameters('envGuid')))]"
+        "[resourceId('Microsoft.Network/loadBalancers', concat(parameters('guid'),'.lb'))]"
     ],
     "properties": {
         "frontendIPConfiguration": {
-            "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations',concat('lb-int-',parameters('envGuid')),'lb-FrontEnd' )]"
+            "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations',concat(parameters('guid'),'.lb'),concat('lb-fe-',parameters('vmIndex')) )]"
         },
         "frontendPort": 3389,
         "backendPort": 3389,

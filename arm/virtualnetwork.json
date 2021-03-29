@@ -2,7 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "envGuid":{
+        "guid":{
             "type": "string",
             "defaultvalue": ""
         }
@@ -12,17 +12,17 @@
     "resources": [
                 {
             "apiVersion": "2020-07-01",
-            "name": "[concat(parameters('envGuid'),'.lb')]",
+            "name": "[concat(parameters('guid'),'.lb')]",
             "type": "Microsoft.Network/loadBalancers",
             "location": "[resourceGroup().location]",
             "sku": {
                 "name": "Standard"
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', concat(parameters('envGuid'),'.vnet'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', concat(parameters('guid'),'.vnet'))]"
             ],
             "tags": {
-                "envGuid": "[parameters('envGuid')]"
+                "guid": "[parameters('guid')]"
             },
 
             "properties": {
@@ -35,7 +35,7 @@
                                     "properties": {
                                         "privateIPAllocationMethod": "Static",
                                         "subnet": {
-                                            "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat(parameters('envGuid'),'.vnet'), 'subnet-1-lb-fe')]"
+                                            "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat(parameters('guid'),'.vnet'), 'subnet-1-lb-fe')]"
                                         },
                                         "privateIPAddress": "[concat('10.0.1.1',copyIndex('frontendIPConfigurations'))]",
                                         "privateIPAddressVersion": "IPv4"
@@ -49,13 +49,13 @@
         },
 
         {
-            "name": "[concat(parameters('envGuid'),'.vnet')]",
+            "name": "[concat(parameters('guid'),'.vnet')]",
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2019-11-01",
             "location": "[resourceGroup().location]",
             "tags": {
                 "displayName": "virtual network",
-                "envGuid": "[parameters('envGuid')]"
+                "guid": "[parameters('guid')]"
             },
             "properties": {
                 "addressSpace": {
@@ -96,7 +96,7 @@
                         {
             "apiVersion": "2019-04-01",
             "type": "Microsoft.Network/privateLinkServices",
-            "name": "[concat(parameters('envGuid'),'.plink.1',copyIndex())]",
+            "name": "[concat(parameters('guid'),'.plink.1',copyIndex())]",
             "location": "[resourceGroup().location]",
             "tags": {
                 "env": "guid"
@@ -116,7 +116,7 @@
                 "enableProxyProtocol": false,
                 "loadBalancerFrontendIpConfigurations": [
                     {
-                        "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations',concat(parameters('envGuid'),'.lb'), concat('lb-fe-1',copyIndex()))]"
+                        "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations',concat(parameters('guid'),'.lb'), concat('lb-fe-1',copyIndex()))]"
                     }
                 ],
                 "ipConfigurations": [
@@ -127,7 +127,7 @@
                             "privateIPAddress": "[concat('10.0.255.1',copyIndex())]",
                             "privateIPAddressVersion": "IPv4",
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat(parameters('envGuid'),'.vnet'), 'subnet-255-plink')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat(parameters('guid'),'.vnet'), 'subnet-255-plink')]"
                             },
                             "primary": true
                         }
@@ -136,7 +136,7 @@
                 "privateEndpointConnections": []
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Network/loadBalancers', concat(parameters('envGuid'),'.lb'))]"
+                "[resourceId('Microsoft.Network/loadBalancers', concat(parameters('guid'),'.lb'))]"
             ]
         }
 
