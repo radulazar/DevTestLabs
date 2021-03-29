@@ -21,9 +21,8 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      $guid = new-guid
-      write-host $guid.guid
-      write-host $guid
+
+      $(guid) = new-guid
 
 
 
