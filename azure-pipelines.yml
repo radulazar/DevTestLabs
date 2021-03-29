@@ -8,7 +8,8 @@ stages:
     pool:
       vmimage: 'windows-latest' 
     steps:
-    - powershell: write-host new-guid
+    - powershell: $guid = new-guid; write-host $guid
+    
 
 
 
