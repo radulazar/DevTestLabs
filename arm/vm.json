@@ -17,6 +17,13 @@
     "metadata": {
         "description": "Private IP of the VM. Needs to be in 10.0.0.x subnet"
     }
+},
+"imageGallery": {
+    "type": "string",
+    "metadata": {
+        "description": "shared image Gallery where the image of the vm is located"
+    },
+    "defaultValue": "BoxImages"
 }
     },
     "functions": [],
@@ -45,7 +52,7 @@
                         }
                     },
                     "imageReference": {
-                        "id": "[concat('/subscriptions/d8058b04-7da0-4499-b527-029c6d0158f7/resourceGroups/BoxImages-rg/providers/Microsoft.Compute/galleries/BoxImages/images/',parameters('VMName'))]"
+                        "id": "[resourceId('Microsoft.Compute/galleries/images',parameters('imageGallery'),parameters('VMName'))]"
                     }
                 },
                 "networkProfile": {
