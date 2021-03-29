@@ -4,7 +4,7 @@ trigger: none
 stages:
 - stage: Build_Environment
   jobs:
-  - job: ARM-Deploy
+  - job: ARM_Deploy
     pool:
       vmimage: 'windows-latest' 
     steps:
