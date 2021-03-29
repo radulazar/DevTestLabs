@@ -1,11 +1,16 @@
 
 trigger: none
 
+
 pool: 
   vmimage: windows-latest
 
 
-variables:
+variables: 
+- name: guid
+
+
+
 
 
   
