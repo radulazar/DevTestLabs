@@ -23,6 +23,7 @@ steps:
     script: |
       $guid = new-guid
       write-host $guid.guid
+      write-host $guid
 
 
 
