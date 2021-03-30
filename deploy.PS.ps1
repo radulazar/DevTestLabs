@@ -31,7 +31,7 @@ foreach ($vm in $VMs) {
 
     # Create Private Endpoint in existing vnet. 
     # Note: Private Endpoint Network Policies must be disabled for that vnet. You can create a Private Endpoint in the portal to auto-disable the policy
-    New-AzResourceGroupDeployment -ResourceGroupName $rg -guid $guid -vmIndex $vm.Index -subnetId $subnetId -TemplateFile .\arm\privatelink.json
+    New-AzResourceGroupDeployment -ResourceGroupName $rg -guid $guid -vmName $vm.Name -vmIndex $vm.Index -subnetId $subnetId -TemplateFile .\arm\privatelink.json
 
 }
 

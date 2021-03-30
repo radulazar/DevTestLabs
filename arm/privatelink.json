@@ -9,6 +9,12 @@
             },
             "defaultValue":""
         },
+        "vmName": {
+            "type": "string",
+            "metadata": {
+                "description": "description"
+            }
+        },
         "vmIndex": {
             "type": "string",
             "metadata": {
@@ -45,14 +51,15 @@
                 ]
             },
             "tags": {
-                "env": "guid"
+                "env": "[parameters('guid')]",
+                "vm": "[parameters('vmName')]"
             }
         }
     ],
     "outputs": {
         "privEndpoint-NIC": {
-            "type": "object",
-            "value": "[reference(resourceId('Microsoft.Network/privateEndpoints',concat(parameters('guid'),'.pendp.',parameters('vmIndex')))).networkInterfaces[0]]"
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.Network/privateEndpoints',concat(parameters('guid'),'.pendp.',parameters('vmIndex')))).networkInterfaces[0].id]"
         }
     }
 }
