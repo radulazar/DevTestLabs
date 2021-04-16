@@ -2,7 +2,10 @@
 # Start with a minimal pipeline that you can customize to build and deploy your code.
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
-
+parameters: 
+  - name: subscription
+    type: string
+     
 
 trigger: none
 
@@ -20,10 +23,10 @@ stages:
             inputs:
               deploymentScope: 'Subscription'
               azureResourceManagerConnection: 'MCT'
-              subscriptionId: 'd8058b04-7da0-4499-b527-029c6d0158f7'
+              subscriptionId: ${{ parameters.subscription }}
               location: 'West Europe'
               templateLocation: 'Linked artifact'
-              csmFile: 'rg.json'
+              csmFile: 'arm/rg.json'
               deploymentMode: 'Incremental'
 
 
