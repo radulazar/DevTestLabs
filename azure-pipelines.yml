@@ -16,8 +16,8 @@ pool:
 stages:
   - stage: deployinfra
     jobs:
-      - job: ResourceGroup
-        displayName: "Create Resource Group"
+      - job: ARMDeploy
+        displayName: "Deploy environment through ARM"
         steps:
           - task: AzureResourceManagerTemplateDeployment@3
             inputs:
@@ -29,6 +29,7 @@ stages:
               csmFile: 'arm/rg.json'
               deploymentMode: 'Incremental'
               deploymentOutputs: armOutputString
+              deploymentName: 'CreateRG'
 
           - task: PowerShell@2
             inputs:
@@ -36,4 +37,19 @@ stages:
               arguments: '-armOutputString ''$(armOutputString)'''
 
 
+
+
+
+          - task: AzureResourceManagerTemplateDeployment@3
+            inputs:
+              deploymentScope: 'Resource Group'
+              azureResourceManagerConnection: 'MCT'
+              subscriptionId: ${{ parameters.subscription }}
+              action: 'Create Or Update Resource Group'
+              resourceGroupName: '$(Output_rgname)'
+              location: 'West Europe'
+              templateLocation: 'Linked artifact'
+              csmFile: 'arm/virtualnetwork.json'
+              overrideParameters: '-guid $(Output_guid)'
+              deploymentMode: 'Incremental'
 
