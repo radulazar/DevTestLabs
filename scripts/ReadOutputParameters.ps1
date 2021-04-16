@@ -1,3 +1,6 @@
+# used for reading output of ARM deployments tasks in Azure Pipelines
+
+
 param (
     [Parameter(Mandatory=$true)]
     [string]
