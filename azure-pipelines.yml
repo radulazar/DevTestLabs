@@ -28,7 +28,7 @@ stages:
               templateLocation: 'Linked artifact'
               csmFile: 'arm/rg.json'
               deploymentMode: 'Incremental'
-              deploymentOutputs: $(armOutputString)
+              deploymentOutputs: armOutputString
 
           - task: PowerShell@2
             inputs:
