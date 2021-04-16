@@ -11,7 +11,7 @@ trigger: none
 
 
 pool:
-  vmImage: 
+  vmImage: windows-latest
 
 stages:
   - stage: deployinfra
