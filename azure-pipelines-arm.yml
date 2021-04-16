@@ -1,0 +1,29 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+
+trigger: none
+
+
+pool:
+  vmImage: 
+
+stages:
+  - stage: deployinfra
+    jobs:
+      - job: ResourceGroup
+        displayName: "Create Resource Group"
+        steps:
+          - task: AzureResourceManagerTemplateDeployment@3
+            inputs:
+              deploymentScope: 'Subscription'
+              azureResourceManagerConnection: 'MCT'
+              subscriptionId: 'd8058b04-7da0-4499-b527-029c6d0158f7'
+              location: 'West Europe'
+              templateLocation: 'Linked artifact'
+              csmFile: 'rg.json'
+              deploymentMode: 'Incremental'
+
+
