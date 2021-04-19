@@ -28,5 +28,5 @@ steps:
     location: 'West Europe'
     templateLocation: 'Linked artifact'
     csmFile: 'arm/vm.json'
-    overrideParameters: '-guid ${{ parameters.guid }} -VMName ${{ parameters.vmName }} -vmIndex ${{ parameters.vmIndex }} -imageGallery ${{ parameters.imageGallery }}'
+    overrideParameters: '-guid ${{ parameters.guid }} -vmName ${{ parameters.vmName }} -vmIndex ${{ parameters.vmIndex }} -imageGallery ${{ parameters.imageGallery }}'
     deploymentMode: 'Incremental'
