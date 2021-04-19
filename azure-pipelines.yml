@@ -55,6 +55,6 @@ stages:
 
           - template: azure-pipeline-template-vm.yml
             parameters:
-              vmName: 'dc'
-              vmIndex: '10'
+              vmName: dc
+              vmIndex: 10
               imageGallery: 'BoxImages'
