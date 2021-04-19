@@ -10,8 +10,8 @@ parameters:
 
 
 steps:
-  - task: AzureResourceManagerTemplateDeployment@3
-    inputs:
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
     deploymentScope: 'Resource Group'
     azureResourceManagerConnection: 'MCT'
     subscriptionId: ${{ parameters.subscription }}
