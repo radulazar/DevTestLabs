@@ -8,6 +8,14 @@ parameters:
   - name: imageGallery
     type: string 
 
+  - name: subscription
+    type: string
+
+  - name: rgname
+    type: string
+   
+  - name: guid
+    type: string
 
 steps:
 - task: AzureResourceManagerTemplateDeployment@3
@@ -16,9 +24,9 @@ steps:
     azureResourceManagerConnection: 'MCT'
     subscriptionId: ${{ parameters.subscription }}
     action: 'Create Or Update Resource Group'
-    resourceGroupName: '$(Output_rgname)'
+    resourceGroupName: ${{ parameters.rgname }}
     location: 'West Europe'
     templateLocation: 'Linked artifact'
     csmFile: 'arm/vm.json'
-    overrideParameters: '-guid $(Output_guid) -vmName ${{ parameters.vmName }} -vmIndex ${{ parameters.vmIndex }} -imageGallery ${{ parameters.imageGallery }}'
+    overrideParameters: '-guid ${{ parameters.guid }} -vmName ${{ parameters.vmName }} -vmIndex ${{ parameters.vmIndex }} -imageGallery ${{ parameters.imageGallery }}'
     deploymentMode: 'Incremental'
