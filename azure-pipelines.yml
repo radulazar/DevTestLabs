@@ -58,3 +58,6 @@ stages:
               vmName: dc
               vmIndex: 10
               imageGallery: 'BoxImages'
+              subscription: ${{ parameters.subscription }}
+              rgname: '$(Output_rgname)'
+              guid: $(Output_guid)'
