@@ -1,14 +1,15 @@
 parameters:
-  -name: vmName
-   type: string
+  - name: vmName
+    type: string
 
-  -name: vmIndex
-   type: string
+  - name: vmIndex
+    type: string
 
-  -name: imageGallery
-   type: string 
+  - name: imageGallery
+    type: string 
 
-steps:
+
+   steps:
   - task: AzureResourceManagerTemplateDeployment@3
     inputs:
     deploymentScope: 'Resource Group'
