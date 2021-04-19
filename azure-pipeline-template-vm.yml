@@ -9,7 +9,7 @@ parameters:
     type: string 
 
 
-   steps:
+steps:
   - task: AzureResourceManagerTemplateDeployment@3
     inputs:
     deploymentScope: 'Resource Group'
