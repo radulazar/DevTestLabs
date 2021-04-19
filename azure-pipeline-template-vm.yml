@@ -1,0 +1,23 @@
+parameters:
+  -name: vmName
+   type: string
+
+  -name: vmIndex
+   type: string
+
+  -name: imageGallery
+   type: string 
+
+steps:
+  - task: AzureResourceManagerTemplateDeployment@3
+    inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: 'MCT'
+    subscriptionId: ${{ parameters.subscription }}
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: '$(Output_rgname)'
+    location: 'West Europe'
+    templateLocation: 'Linked artifact'
+    csmFile: 'arm/vm.json'
+    overrideParameters: '-guid $(Output_guid) -vmName ${{ parameters.vmName }} -vmIndex ${{ parameters.vmIndex }} -imageGallery ${{ parameters.imageGallery }}'
+    deploymentMode: 'Incremental'
