@@ -11,6 +11,10 @@ parameters:
     type: boolean
     default: true
 
+  - name: srv
+    displayName: Deploy SRV?
+    type: boolean
+    default: true
 
 trigger: none
 
@@ -63,6 +67,16 @@ stages:
               parameters:
                 vmName: 'dc'
                 vmIndex: '10'
+                imageGallery: 'BoxImages'
+                subscription: ${{ parameters.subscription }}
+                rgname: '$(Output_rgname)'
+                guid: '$(Output_guid)'
+
+          - ${{ if eq(parameters.srv, true) }}:
+            - template: azure-pipeline-template-vm.yml
+              parameters:
+                vmName: 'srv'
+                vmIndex: '11'
                 imageGallery: 'BoxImages'
                 subscription: ${{ parameters.subscription }}
                 rgname: '$(Output_rgname)'
