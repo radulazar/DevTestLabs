@@ -6,6 +6,11 @@ parameters:
   - name: subscription
     type: string
      
+  - name: dc
+    displayName: Deploy DC?
+    type: boolean
+    default: true
+
 
 trigger: none
 
@@ -53,11 +58,12 @@ stages:
               overrideParameters: '-guid $(Output_guid)'
               deploymentMode: 'Incremental'
 
-          - template: azure-pipeline-template-vm.yml
-            parameters:
-              vmName: 'dc'
-              vmIndex: '10'
-              imageGallery: 'BoxImages'
-              subscription: ${{ parameters.subscription }}
-              rgname: '$(Output_rgname)'
-              guid: '$(Output_guid)'
+          - ${{ if eq(parameters.dc, true) }}:
+            - template: azure-pipeline-template-vm.yml
+              parameters:
+                vmName: 'dc'
+                vmIndex: '10'
+                imageGallery: 'BoxImages'
+                subscription: ${{ parameters.subscription }}
+                rgname: '$(Output_rgname)'
+                guid: '$(Output_guid)'
