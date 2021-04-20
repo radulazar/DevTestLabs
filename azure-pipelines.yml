@@ -60,4 +60,4 @@ stages:
               imageGallery: 'BoxImages'
               subscription: ${{ parameters.subscription }}
               rgname: '$(Output_rgname)'
-              guid: $(Output_guid)'
+              guid: '$(Output_guid)'
