@@ -97,3 +97,12 @@ stages:
                 rgname: '$(Output_rgname)'
                 guid: '$(Output_guid)'
                 subnetId: '$(subnetId)'
+
+          - task: AzurePowerShell@5
+            inputs:
+              azureSubscription: 'MCT'
+              ScriptType: 'InlineScript'
+              Inline: |
+                $VMs = Get-AzVM -ResourceGroupName $(Output_rgname)
+                Write-Output $VMs
+              azurePowerShellVersion: 'LatestVersion'
