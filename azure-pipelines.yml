@@ -45,8 +45,14 @@ stages:
               filePath: 'scripts/ReadOutputParameters.ps1'
               arguments: '-armOutputString ''$(armOutputString)'''
 
+          - task: AzurePowerShell@5
+            inputs:
+              azureSubscription: 'MCT'
+              ScriptType: 'InlineScript'
+              Inline: '$subnetId = (Get-AzVirtualNetwork -name $endpointVirtualNetwork | Get-AzVirtualNetworkSubnetConfig -name $endpointVirtualNetworkSubnet).Id'
+              azurePowerShellVersion: 'LatestVersion'
 
-
+          - script: echo '$(subnetId)'
 
 
           - task: AzureResourceManagerTemplateDeployment@3
