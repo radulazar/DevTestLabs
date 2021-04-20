@@ -60,7 +60,7 @@ stages:
               Inline: '$subnetId = (Get-AzVirtualNetwork -name ${{ parameters.endpointVirtualNetwork }} | Get-AzVirtualNetworkSubnetConfig -name ${{ parameters.endpointVirtualNetworkSubnet }}).Id'
               azurePowerShellVersion: 'LatestVersion'
 
-          - script: echo '$(subnetId)'
+          - script: echo $(subnetId)
 
 
           - task: AzureResourceManagerTemplateDeployment@3
