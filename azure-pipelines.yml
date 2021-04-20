@@ -59,6 +59,7 @@ stages:
               ScriptType: 'InlineScript'
               Inline: |
                 $subnetId = (Get-AzVirtualNetwork -name ${{ parameters.endpointVirtualNetwork }} | Get-AzVirtualNetworkSubnetConfig -name ${{ parameters.endpointVirtualNetworkSubnet }}).Id
+                Write-Output "##vso[task.setvariable variable=subnetId]$subnetId"
                 Write-Output $subnetId
               azurePowerShellVersion: 'LatestVersion'
 
