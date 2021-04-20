@@ -5,6 +5,14 @@
 parameters: 
   - name: subscription
     type: string
+
+  - name: endpointVirtualNetwork
+    type: string
+    default: 'OnPremConnect-vNet'
+
+  - name: endpointVirtualNetworkSubnet
+    type: string
+    default: '192.168.1.0_24'    
      
   - name: dc
     displayName: Deploy DC?
@@ -49,7 +57,7 @@ stages:
             inputs:
               azureSubscription: 'MCT'
               ScriptType: 'InlineScript'
-              Inline: '$subnetId = (Get-AzVirtualNetwork -name $endpointVirtualNetwork | Get-AzVirtualNetworkSubnetConfig -name $endpointVirtualNetworkSubnet).Id'
+              Inline: '$subnetId = (Get-AzVirtualNetwork -name ${{ parameters.endpointVirtualNetwork }} | Get-AzVirtualNetworkSubnetConfig -name ${{ endpointVirtualNetworkSubnet }}).Id'
               azurePowerShellVersion: 'LatestVersion'
 
           - script: echo '$(subnetId)'
