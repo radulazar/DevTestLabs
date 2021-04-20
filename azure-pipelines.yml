@@ -5,7 +5,24 @@
 parameters: 
   - name: subscription
     type: string
+
+  - name: endpointVirtualNetwork
+    type: string
+    default: 'OnPremConnect-vNet'
+
+  - name: endpointVirtualNetworkSubnet
+    type: string
+    default: '192.168.1.0_24'
      
+  - name: dc
+    displayName: Deploy DC?
+    type: boolean
+    default: true
+
+  - name: srv
+    displayName: Deploy SRV?
+    type: boolean
+    default: true
 
 trigger: none
 
@@ -36,8 +53,17 @@ stages:
               filePath: 'scripts/ReadOutputParameters.ps1'
               arguments: '-armOutputString ''$(armOutputString)'''
 
+          - task: AzurePowerShell@5
+            inputs:
+              azureSubscription: 'MCT'
+              ScriptType: 'InlineScript'
+              Inline: |
+                $subnetId = (Get-AzVirtualNetwork -name ${{ parameters.endpointVirtualNetwork }} | Get-AzVirtualNetworkSubnetConfig -name ${{ parameters.endpointVirtualNetworkSubnet }}).Id
+                Write-Output "##vso[task.setvariable variable=subnetId]$subnetId"
+                Write-Output $subnetId
+              azurePowerShellVersion: 'LatestVersion'
 
-
+          - script: echo $(subnetId)
 
 
           - task: AzureResourceManagerTemplateDeployment@3
@@ -53,11 +79,22 @@ stages:
               overrideParameters: '-guid $(Output_guid)'
               deploymentMode: 'Incremental'
 
-          - template: azure-pipeline-template-vm.yml
-            parameters:
-              vmName: 'dc'
-              vmIndex: '10'
-              imageGallery: 'BoxImages'
-              subscription: ${{ parameters.subscription }}
-              rgname: '$(Output_rgname)'
-              guid: $(Output_guid)'
+          - ${{ if eq(parameters.dc, true) }}:
+            - template: azure-pipeline-template-vm.yml
+              parameters:
+                vmName: 'dc'
+                vmIndex: '10'
+                imageGallery: 'BoxImages'
+                subscription: ${{ parameters.subscription }}
+                rgname: '$(Output_rgname)'
+                guid: '$(Output_guid)'
+
+          - ${{ if eq(parameters.srv, true) }}:
+            - template: azure-pipeline-template-vm.yml
+              parameters:
+                vmName: 'srv'
+                vmIndex: '11'
+                imageGallery: 'BoxImages'
+                subscription: ${{ parameters.subscription }}
+                rgname: '$(Output_rgname)'
+                guid: '$(Output_guid)'
