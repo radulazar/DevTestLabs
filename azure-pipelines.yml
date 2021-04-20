@@ -112,5 +112,5 @@ stages:
                 Write-Output $vnet | ft Name,ProvisioningState
                 Write-Output Box Virtual Machines
                 Write-Output $VMs
-                Write-Output Box Virtual Network
+                Write-Output Private Links
               azurePowerShellVersion: 'LatestVersion'
