@@ -17,6 +17,9 @@ parameters:
   - name: guid
     type: string
 
+  - name: subnetId
+    type: string  
+
 steps:
 - task: AzureResourceManagerTemplateDeployment@3
   inputs:
@@ -30,3 +33,16 @@ steps:
     csmFile: 'arm/vm.json'
     overrideParameters: '-vmIndex ${{ parameters.vmIndex }} -vmName ${{ parameters.vmName }} -guid ${{ parameters.guid }} -imageGallery ${{ parameters.imageGallery }}'
     deploymentMode: 'Incremental'
+
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: 'MCT'
+    subscriptionId: ${{ parameters.subscription }}
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: ${{ parameters.rgname }}
+    location: 'West Europe'
+    templateLocation: 'Linked artifact'
+    csmFile: 'arm/privatelink.json'
+    overrideParameters: '-vmIndex ${{ parameters.vmIndex }} -vmName ${{ parameters.vmName }} -guid ${{ parameters.guid }} -subnetId ${{ parameters.subnetId }}'
+    deploymentMode: 'Incremental'    
