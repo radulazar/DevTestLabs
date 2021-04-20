@@ -57,7 +57,9 @@ stages:
             inputs:
               azureSubscription: 'MCT'
               ScriptType: 'InlineScript'
-              Inline: '$subnetId = (Get-AzVirtualNetwork -name ${{ parameters.endpointVirtualNetwork }} | Get-AzVirtualNetworkSubnetConfig -name ${{ parameters.endpointVirtualNetworkSubnet }}).Id'
+              Inline: |
+                $subnetId = (Get-AzVirtualNetwork -name ${{ parameters.endpointVirtualNetwork }} | Get-AzVirtualNetworkSubnetConfig -name ${{ parameters.endpointVirtualNetworkSubnet }}).Id
+                Write-Host $subnetId
               azurePowerShellVersion: 'LatestVersion'
 
           - script: echo $(subnetId)
