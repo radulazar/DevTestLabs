@@ -131,5 +131,5 @@ stages:
                       }
                   $objVMs += $vmhash
                   }
-                Write-Output $objVMs
+                Write-Output $objVMs | ft
               azurePowerShellVersion: 'LatestVersion'
