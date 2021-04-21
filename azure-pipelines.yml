@@ -116,10 +116,12 @@ stages:
                   $VmPublicIpAddress.Add($nic.Tag.vm,$nic.IpConfigurations.PrivateIPAddress) 
                   }
                 ForEach($VM in $VMs){
+                  $vmnic = Get-aznetworkInterface -resourceId $vm[0].NetworkProfile.NetworkInterfaces[0].id
                   $vmhash = [PSCustomObject]@{
                       Name = $vm.Name
                       ProvisioningState = $vm.ProvisioningState
                       PublicIPAddress = $VmPublicIpAddress[$vm.Name]
+                      PrivateIPAddress = $vmnic.Ipconfigurations[0].PrivateIpAddress
                       }
                   $objVMs += $vmhash
                   }
