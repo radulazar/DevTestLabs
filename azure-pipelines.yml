@@ -109,7 +109,7 @@ stages:
               Inline: |
                 $VmPublicIpAddress = @{}
                 $objVMs = @()
-                $dnszone = '.' + $(Output_guid) + $(dnssuffix)
+                $dnszone = '.' + $(Output_guid) + ${{ parameters.dnssuffix }}
                 $RG = Get-AzResourceGroup -ResourceGroupName $(Output_rgname)
                 $vnet = Get-AzVirtualNetwork -ResourceGroupName $(Output_rgname)
                 $VMs = Get-AzVM -ResourceGroupName $(Output_rgname)
