@@ -107,9 +107,7 @@ stages:
                 $vnet = Get-AzVirtualNetwork -ResourceGroupName $(Output_rgname)
                 $VMs = Get-AzVM -ResourceGroupName $(Output_rgname)
                 Write-Output " ## Resource Group ##"
-                Write-Output $RG
-                Write-Output " ## Virtual Network ##" $vnet | ft Name,ProvisioningState
-                Write-Output " ## Virtual Machines ##"
-                Write-Output $VMs
-                Write-Output " ## Private Links ##"
+                Write-Output $RG   | ft Name, ProvisioningState
+                Write-Output $vnet | ft Name,ProvisioningState
+                Write-Output $VMs  | ft Name,ProvisioningState
               azurePowerShellVersion: 'LatestVersion'
