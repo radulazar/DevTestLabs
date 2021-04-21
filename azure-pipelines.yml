@@ -108,8 +108,7 @@ stages:
                 $VMs = Get-AzVM -ResourceGroupName $(Output_rgname)
                 Write-Output " ## Resource Group ##"
                 Write-Output $RG
-                Write-Output " ## Virtual Network ##"
-                Write-Output $vnet | ft Name,ProvisioningState
+                Write-Output " ## Virtual Network ##" $vnet | ft Name,ProvisioningState
                 Write-Output " ## Virtual Machines ##"
                 Write-Output $VMs
                 Write-Output " ## Private Links ##"
