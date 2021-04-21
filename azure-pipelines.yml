@@ -63,9 +63,6 @@ stages:
                 Write-Output $subnetId
               azurePowerShellVersion: 'LatestVersion'
 
-          - script: echo $(subnetId)
-
-
           - task: AzureResourceManagerTemplateDeployment@3
             inputs:
               deploymentScope: 'Resource Group'
@@ -88,6 +85,7 @@ stages:
                 subscription: ${{ parameters.subscription }}
                 rgname: '$(Output_rgname)'
                 guid: '$(Output_guid)'
+                subnetId: '$(subnetId)'
 
           - ${{ if eq(parameters.srv, true) }}:
             - template: azure-pipeline-template-vm.yml
@@ -98,3 +96,24 @@ stages:
                 subscription: ${{ parameters.subscription }}
                 rgname: '$(Output_rgname)'
                 guid: '$(Output_guid)'
+                subnetId: '$(subnetId)'
+
+          - task: AzurePowerShell@5
+            inputs:
+              azureSubscription: 'MCT'
+              ScriptType: 'InlineScript'
+              Inline: |
+                $RG = Get-AzResourceGroup -ResourceGroupName $(Output_rgname)
+                $vnet = Get-AzVirtualNetwork -ResourceGroupName $(Output_rgname)
+                $VMs = Get-AzVM -ResourceGroupName $(Output_rgname)
+                $pend = Get-AzPrivateEndpoint -ResourceGroupName $(Output_rgname)
+                $nicIds = $pend.NetworkInterfaces.id
+                Write-Output " ## Resource Group ##"
+                Write-Output $RG   | ft ResourceGroupName, ProvisioningState
+                Write-Output $vnet | ft Name,ProvisioningState
+                Write-Output $VMs  | ft Name,ProvisioningState
+                ForEach ($nicId in $nicIds){
+                  $nic = Get-AzNetworkInterface -ResourceId $nicId 
+                    Write-Output $nic.IpConfigurations.PrivateIPAddress $nic.Tag.vm $nic.Tag.env
+                    }
+              azurePowerShellVersion: 'LatestVersion'
