@@ -32,7 +32,7 @@
 
 
              {
-            "name": "[concat(parameters('vmName'),'1')]",
+            "name": "[parameters('vmName')]",
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2020-12-01",
             "location": "[resourceGroup().location]",
