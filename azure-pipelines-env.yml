@@ -36,7 +36,7 @@ stages:
               - task: PowerShell@2
                 inputs:
                   targetType: 'inline'
-                  script: 'Add-DnsServerPrimaryZone -Name ''zone.test.zone'' -zonefile ''zone.dns'''
+                  script: 'Add-DnsServerPrimaryZone -Name ''zone3.test.zone'' -zonefile ''zone3.dns'''
               
               - task: AzurePowerShell@5
                 inputs:
@@ -54,11 +54,8 @@ stages:
                     $DnsZoneName = 'test.zone'
                     $guidDNSZoneName = $guid + "." + $DnsZoneName
                     # for stand-alone DNS server
-                    $guidDNSZoneFile = $boxZone + ".dns"
-                    
-                    
-                
-                    
+                    $guidDNSZoneFile = $guid + ".dns"
+
                     function read-Azure-records{
                     param([string] $guid)
                     
