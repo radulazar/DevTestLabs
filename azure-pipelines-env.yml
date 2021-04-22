@@ -28,15 +28,15 @@ stages:
 
               - task: CopyFiles@2
                 inputs:
-                 SourceFolder: '$(Pipeline.Workspace)'
+                 SourceFolder: '$(Build.SourcesDirectory)'
                  Contents: '**'
-                 TargetFolder: 'c:\scripts\'
+                 TargetFolder: 'c:\build\'
 
               - task: AzurePowerShell@5
                 inputs:
                   azureSubscription: 'MCT'
                   ScriptType: 'FilePath'
-                  ScriptPath: 'c:\scripts\ReadAndRegisterDnsRecords.ps1'
+                  ScriptPath: 'c:\build\scripts\ReadAndRegisterDnsRecords.ps1'
                   ScriptArguments: '-guid ''583c36a6-ba02-4725-843f-4994709faae6'''
                   azurePowerShellVersion: 'LatestVersion'
 
