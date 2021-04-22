@@ -1,0 +1,47 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+parameters:
+  - name: var1
+    type: string
+    default: test
+
+trigger: none
+pool:
+  vmImage: windows-latest
+
+stages:
+  - stage: deployinfra
+    jobs:
+      - deployment: RegisterDNS
+        displayName: "Register DNS Records"
+        environment: 
+         name: Dev
+         resourceType: VirtualMachine
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+              - checkout: self
+              - script: echo ${{ parameters.var1 }}
+
+              - task: CopyFiles@2
+                inputs:
+                 SourceFolder: '$(Build.SourcesDirectory)'
+                 Contents: '**'
+                 TargetFolder: 'c:\build\'
+
+              - task: AzurePowerShell@5
+                inputs:
+                  azureSubscription: 'MCT'
+                  ScriptType: 'FilePath'
+                  ScriptPath: 'c:\build\scripts\ReadAndRegisterDnsRecords.ps1'
+                  ScriptArguments: '-guid ''583c36a6-ba02-4725-843f-4994709faae6'''
+                  azurePowerShellVersion: 'LatestVersion'
+
+
+
+
+

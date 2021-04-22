@@ -13,6 +13,10 @@ parameters:
   - name: endpointVirtualNetworkSubnet
     type: string
     default: '192.168.1.0_24'
+  
+  - name: dnssuffix
+    type: string
+    default: '.dns.domain'
      
   - name: dc
     displayName: Deploy DC?
@@ -103,17 +107,29 @@ stages:
               azureSubscription: 'MCT'
               ScriptType: 'InlineScript'
               Inline: |
+                $VmPublicIpAddress = @{}
+                $objVMs = @()
+                $dnszone = '.' + '$(Output_guid)' + '${{ parameters.dnssuffix }}'
                 $RG = Get-AzResourceGroup -ResourceGroupName $(Output_rgname)
                 $vnet = Get-AzVirtualNetwork -ResourceGroupName $(Output_rgname)
                 $VMs = Get-AzVM -ResourceGroupName $(Output_rgname)
                 $pend = Get-AzPrivateEndpoint -ResourceGroupName $(Output_rgname)
                 $nicIds = $pend.NetworkInterfaces.id
-                Write-Output " ## Resource Group ##"
-                Write-Output $RG   | ft ResourceGroupName, ProvisioningState
-                Write-Output $vnet | ft Name,ProvisioningState
-                Write-Output $VMs  | ft Name,ProvisioningState
+
                 ForEach ($nicId in $nicIds){
-                  $nic = Get-AzNetworkInterface -ResourceId $nicId 
-                    Write-Output $nic.IpConfigurations.PrivateIPAddress $nic.Tag.vm $nic.Tag.env
-                    }
+                  $nic = Get-AzNetworkInterface -ResourceId $nicId
+                  $VmPublicIpAddress.Add($nic.Tag.vm,$nic.IpConfigurations.PrivateIPAddress) 
+                  }
+                ForEach($VM in $VMs){
+                  $vmnic = Get-aznetworkInterface -resourceId $vm[0].NetworkProfile.NetworkInterfaces[0].id
+                  $vmhash = [PSCustomObject]@{
+                      Name = $vm.Name
+                      ProvisioningState = $vm.ProvisioningState
+                      PublicIPAddress = $VmPublicIpAddress[$vm.Name]
+                      PublicDNSName = $vm.Name + $dnszone
+                      PrivateIPAddress = $vmnic.Ipconfigurations[0].PrivateIpAddress
+                      }
+                  $objVMs += $vmhash
+                  }
+                Write-Output $objVMs | ft
               azurePowerShellVersion: 'LatestVersion'
