@@ -4,6 +4,7 @@ param(
 )
 # DNS zone to be created inside $DnsZoneName
 Write-Output $DnsZoneName
+$DnsZoneName = 'test.zone'
 $guidDNSZoneName = $guid + "." + $DnsZoneName
 # for stand-alone DNS server
 $guidDNSZoneFile = $boxZone + ".dns"
