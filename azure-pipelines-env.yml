@@ -47,7 +47,7 @@ stages:
                     #)
                     # DNS zone to be created inside $DnsZoneName
                     
-                    $guid = '583c36a6-ba02-4725-843f-4994709faae6'
+                    $guid = 'ea9fdfcc-42ef-443d-86e6-8ea69efe5c43'
                     $DnsZoneName = 'test.zone'
                     Write-Output $DnsZoneName 
                     Write-Output 'output'
@@ -59,6 +59,7 @@ stages:
                     param([string] $guid)
                     
                     $pendp_Resources = Get-AzResource -Tag @{ "env" = $guid} -ResourceType "Microsoft.Network/privateEndpoints" 
+                    write-output $pendp_Resources
                     # array of hashtables with vm & IP information to be added to DNS, one hastable object per DNS record
                     $arrayDnsRecords = @()
                     foreach ($pendp_Resource in $pendp_Resources){
