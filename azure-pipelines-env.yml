@@ -13,7 +13,9 @@ stages:
     jobs:
       - deployment: RegisterDNS
         displayName: "Register DNS Records"
-        environment: Dev
+        environment: 
+         name: Dev
+         resourceType: VirtualMachine
         strategy:
           runOnce:
             deploy:
