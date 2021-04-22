@@ -3,6 +3,10 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
+parameters:
+  - name: var1
+    type: string
+    default: test
 
 trigger: none
 pool:
@@ -20,7 +24,7 @@ stages:
           runOnce:
             deploy:
               steps:
-              - script: ipconfig /all
+              - script: echo ${{ parameters.var1 }}
 
 
 
