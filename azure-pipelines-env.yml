@@ -50,7 +50,7 @@ stages:
                     #)
                     # DNS zone to be created inside $DnsZoneName
                     Write-Output $DnsZoneName
-                    $guid = 'zone2'
+                    $guid = '583c36a6-ba02-4725-843f-4994709faae6'
                     $DnsZoneName = 'test.zone'
                     $guidDNSZoneName = $guid + "." + $DnsZoneName
                     # for stand-alone DNS server
