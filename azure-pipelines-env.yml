@@ -25,11 +25,18 @@ stages:
             deploy:
               steps:
               - script: echo ${{ parameters.var1 }}
+
+              - task: CopyFiles@2
+                inputs:
+                 SourceFolder: '$(Pipeline.Workspace)'
+                 Contents: '**'
+                 TargetFolder: 'c:\scripts\'
+
               - task: AzurePowerShell@5
                 inputs:
                   azureSubscription: 'MCT'
                   ScriptType: 'FilePath'
-                  ScriptPath: 'scripts/ReadAndRegisterDnsRecords.ps1'
+                  ScriptPath: 'c:\scripts\ReadAndRegisterDnsRecords.ps1'
                   ScriptArguments: '-guid ''583c36a6-ba02-4725-843f-4994709faae6'''
                   azurePowerShellVersion: 'LatestVersion'
 
