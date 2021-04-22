@@ -33,6 +33,11 @@ stages:
                  Contents: '**'
                  TargetFolder: 'c:\build\'
 
+              - task: PowerShell@2
+                inputs:
+                  targetType: 'inline'
+                  script: 'Add-DnsServerPrimaryZone -Name ''zone.test.zone'' -zonefile ''zone.dns'''
+              
               - task: AzurePowerShell@5
                 inputs:
                   azureSubscription: 'MCT'
