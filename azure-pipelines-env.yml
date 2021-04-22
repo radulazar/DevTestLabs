@@ -69,7 +69,7 @@ stages:
                     
                     ## Get info from Azure and register in onprem DNS
                     $DnsRecords = read-Azure-records($guid)
-                    
+                    Write-Output $DnsRecords
                     # create DNS zone for the environment
                     Add-DnsServerPrimaryZone -Name $guidDNSZoneName -zonefile $guidDNSZoneFile
                     
