@@ -38,7 +38,7 @@ stages:
                   azureSubscription: 'MCT'
                   ScriptType: 'FilePath'
                   ScriptPath: 'c:\build\scripts\ReadAndRegisterDnsRecords.ps1'
-                  ScriptArguments: '-guid ''583c36a6-ba02-4725-843f-4994709faae6'''
+                  ScriptArguments: '-guid ''583c36a6-ba02-4725-843f-4994709faae6'' -DnsZoneName ''test.zone'''
                   azurePowerShellVersion: 'LatestVersion'
 
 
