@@ -136,6 +136,7 @@ stages:
 
 
       - deployment: RegisterDNS
+        dependsOn: ARMDeploy
         displayName: "Register DNS Records"
         environment: 
          name: Dev
