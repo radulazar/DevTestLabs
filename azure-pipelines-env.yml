@@ -49,10 +49,9 @@ stages:
                     
                     $guid = '0f874c22-eb62-4441-9263-a831bc6e8135'
                     $DnsZoneName = 'test.zone'
-                    Write-Output $DnsZoneName 
-                    Write-Output 'output'
                     $guidDNSZoneName = $guid + "." + $DnsZoneName
-                    # for stand-alone DNS server, not AD integrated
+
+                    # file is required for stand-alone DNS server, not AD integrated
                     $guidDNSZoneFile = $guid + ".dns"
                     $rg = $guid + '.rg'
                     $VmPublicIpAddress = @{}   
