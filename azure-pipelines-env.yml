@@ -63,14 +63,17 @@ stages:
                       $VmPublicIpAddress.Add($nic.Tag.vm,$nic.IpConfigurations.PrivateIPAddress) 
                       }
                     Write-Output $VmPublicIpAddress
-
+                    
+                    Add-DnsServerPrimaryZone -Name $guidDNSZoneName -zonefile $guidDNSZoneFile
+                    
                     $VmPublicIpAddress.keys | ForEach-Object{
                       $message = '{0} has {1} public IP!' -f $_, $VmPublicIpAddress[$_]
                         Write-Output $message
+                        Add-DnsServerResourceRecordA -ZoneName $guidDNSZoneName -Name $_ -IPv4Address $VmPublicIpAddress[$_] -computername localhost -CreatePtr
                       }
                     ## Get info from Azure and register in onprem DNS
                     # create DNS zone for the environment
-                    # Add-DnsServerPrimaryZone -Name $guidDNSZoneName -zonefile $guidDNSZoneFile
+                    
                     
                     # foreach ($DnsRecord in $DnsRecords){
                     #   Add-DnsServerResourceRecordA -ZoneName $guidDNSZoneName -Name $DnsRecord.vm -IPv4Address $DnsRecord.IP -computername localhost -CreatePtr   
