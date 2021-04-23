@@ -16,7 +16,7 @@ parameters:
   
   - name: dnssuffix
     type: string
-    default: '.dns.domain'
+    default: '.test.zone'
      
   - name: dc
     displayName: Deploy DC?
@@ -173,8 +173,7 @@ stages:
                       # Create DNS zone and Records onpremise
                       
                       $guid = '$(guid)'
-                      $DnsZoneName = 'test.zone'
-                      $guidDNSZoneName = $guid + "." + $DnsZoneName
+                      $guidDNSZoneName = $guid + '${{ parameters.dnssuffix }}'
 
                       # file is required for stand-alone DNS server, not AD integrated
                       $guidDNSZoneFile = $guid + ".dns"
