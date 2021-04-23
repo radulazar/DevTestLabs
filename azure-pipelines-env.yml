@@ -47,38 +47,34 @@ stages:
                     #)
                     # DNS zone to be created inside $DnsZoneName
                     
-                    $guid = 'ea9fdfcc-42ef-443d-86e6-8ea69efe5c43'
+                    $guid = '0f874c22-eb62-4441-9263-a831bc6e8135'
                     $DnsZoneName = 'test.zone'
                     Write-Output $DnsZoneName 
                     Write-Output 'output'
                     $guidDNSZoneName = $guid + "." + $DnsZoneName
-                    # for stand-alone DNS server
+                    # for stand-alone DNS server, not AD integrated
                     $guidDNSZoneFile = $guid + ".dns"
 
-                    function read-Azure-records{
-                    param([string] $guid)
-                    
-                    $pendp_Resources = Get-AzResource -Tag @{ "env" = $guid} -ResourceType "Microsoft.Network/privateEndpoints" 
-                    write-output $pendp_Resources
-                    # array of hashtables with vm & IP information to be added to DNS, one hastable object per DNS record
-                    $arrayDnsRecords = @()
-                    foreach ($pendp_Resource in $pendp_Resources){
-                        $pendp_Nic = (Get-AzPrivateEndpoint -Name $pendp_Resource.Name).NetworkInterfaces[0]
-                        $nicObj = Get-AzNetworkInterface -ResourceId $pendp_Nic.Id
-                        $arrayDnsRecords +=(@{"vm" = $nicObj.Tag.vm; "IP" = $nicObj.IpConfigurations[0].PrivateIpAddress})
-                        }
-                    return $arrayDnsRecords
-                    }
-                    
+                    $VmPublicIpAddress = @{}   
+                    $pend = Get-AzPrivateEndpoint -ResourceGroupName $(Output_rgname)
+                    $nicIds = $pend.NetworkInterfaces.id
+                    ForEach ($nicId in $nicIds){
+                      $nic = Get-AzNetworkInterface -ResourceId $nicId
+                      $VmPublicIpAddress.Add($nic.Tag.vm,$nic.IpConfigurations.PrivateIPAddress) 
+                      }
+                    Write-Output $VmPublicIpAddress
+
+                    $VmPublicIpAddress.keys | ForEach-Object{
+                      $message = '{0} has {1} public IP!' -f $_, $VmPublicIpAddress[$_]
+                        Write-Output $message
+                      }
                     ## Get info from Azure and register in onprem DNS
-                    $DnsRecords = read-Azure-records($guid)
-                    Write-Output $DnsRecords
                     # create DNS zone for the environment
-                    Add-DnsServerPrimaryZone -Name $guidDNSZoneName -zonefile $guidDNSZoneFile
+                    # Add-DnsServerPrimaryZone -Name $guidDNSZoneName -zonefile $guidDNSZoneFile
                     
-                    foreach ($DnsRecord in $DnsRecords){
-                        Add-DnsServerResourceRecordA -ZoneName $guidDNSZoneName -Name $DnsRecord.vm -IPv4Address $DnsRecord.IP -computername localhost -CreatePtr   
-                    }
+                    # foreach ($DnsRecord in $DnsRecords){
+                    #   Add-DnsServerResourceRecordA -ZoneName $guidDNSZoneName -Name $DnsRecord.vm -IPv4Address $DnsRecord.IP -computername localhost -CreatePtr   
+                    # }
                     # list created records
                     Get-DnsServerResourceRecord -ZoneName $guidDNSZoneName -RRType A
                   azurePowerShellVersion: 'LatestVersion'
