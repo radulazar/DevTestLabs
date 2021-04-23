@@ -19,7 +19,7 @@ $armOutputObj.PSObject.Properties | ForEach-Object {
         Write-Output "##vso[task.setvariable variable=$keyname;issecret=true]$value"
         Write-Output "Added VSTS variable '$keyname' ('$type')"
     } elseif ($type -eq "string") {
-        Write-Output "##vso[task.setvariable variable=$keyname]$value"
+        Write-Output "##vso[task.setvariable variable=$keyname;isOutput=true]$value"
         Write-Output "Added VSTS variable '$keyname' ('$type') with value '$value'"
     } else {
         Throw "Type '$type' is not supported for '$keyname'"
