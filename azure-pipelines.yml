@@ -74,11 +74,11 @@ stages:
               azureResourceManagerConnection: 'MCT'
               subscriptionId: ${{ parameters.subscription }}
               action: 'Create Or Update Resource Group'
-              resourceGroupName: '$(Output_rgname)'
+              resourceGroupName: '$(ParseParams.Output_rgname)'
               location: 'West Europe'
               templateLocation: 'Linked artifact'
               csmFile: 'arm/virtualnetwork.json'
-              overrideParameters: '-guid $(Output_guid)'
+              overrideParameters: '-guid $(ParseParams.Output_guid)'
               deploymentMode: 'Incremental'
 
           - ${{ if eq(parameters.dc, true) }}:
