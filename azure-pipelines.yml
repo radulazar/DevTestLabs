@@ -149,7 +149,7 @@ stages:
             deploy:
               steps:
               - checkout: self
-              - script: echo $(Output_guid)
+              - script: echo $(guid)
 
               - task: CopyFiles@2
                 inputs:
@@ -167,7 +167,7 @@ stages:
                     
                     # Create DNS zone and Records onpremise
                     
-                    $guid = $(Output_guid)
+                    $guid = $(guid)
                     $DnsZoneName = 'test.zone'
                     $guidDNSZoneName = $guid + "." + $DnsZoneName
 
