@@ -201,7 +201,8 @@ stages:
                       else {
                         Write-Output "Zone $guidDNSZoneName exists. Zone and records will not be created"    
                         }
-
-                      Write-Output 'DNS records in zone $guidDNSZoneName Type:A'
+                      
+                      Start-Sleep -s 10
+                      Write-Output 'Listing DNS records in zone Type:A'
                       Get-DnsServerResourceRecord -ZoneName $guidDNSZoneName -RRType A | format-Table
                     azurePowerShellVersion: 'LatestVersion'
