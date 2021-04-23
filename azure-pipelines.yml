@@ -184,8 +184,9 @@ stages:
                     Write-Output 'DNS Records to be created:'
                     Write-Output $VmPublicIpAddress
                     
-                    $zone = Get-DnsServerZone -Name $guidDNSZoneName
-                    if ($zone -eq $null){
+                    $Zones = Get-DnsServerZone
+                    $ZoneNames = $Zones.ZoneName
+                    if ($ZoneNames.Contains($guidDNSZoneName) -eq $false){
                       Write-Output 'Creating DNS Zone'
                       Add-DnsServerPrimaryZone -Name $guidDNSZoneName -zonefile $guidDNSZoneFile
                       Write-Output 'Creating DNS Records'
