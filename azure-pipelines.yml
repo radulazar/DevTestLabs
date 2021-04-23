@@ -30,6 +30,7 @@ parameters:
 
   - name: RunRegisterDNS
     displayName: Register DNS records?
+    type: boolean
     default: true
 
 trigger: none
