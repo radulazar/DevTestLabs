@@ -78,7 +78,7 @@ stages:
                       Write-Output "Zone $guidDNSZoneName exists. Zone and records will not be created"    
                       }
 
-                    Write-Outout 'A DNS records in zone $guidDNSZoneName
+                    Write-Outout 'DNS records in zone $guidDNSZoneName Type:A'
                     Get-DnsServerResourceRecord -ZoneName $guidDNSZoneName -RRType A | format-Table
                   azurePowerShellVersion: 'LatestVersion'
 
