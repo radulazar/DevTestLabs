@@ -79,7 +79,7 @@ stages:
                     #   Add-DnsServerResourceRecordA -ZoneName $guidDNSZoneName -Name $DnsRecord.vm -IPv4Address $DnsRecord.IP -computername localhost -CreatePtr   
                     # }
                     # list created records
-                    Get-DnsServerResourceRecord -ZoneName $guidDNSZoneName -RRType A
+                    Get-DnsServerResourceRecord -ZoneName $guidDNSZoneName -RRType A | format-Table
                   azurePowerShellVersion: 'LatestVersion'
 
 
