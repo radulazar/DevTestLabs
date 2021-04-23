@@ -53,6 +53,7 @@ stages:
               deploymentName: 'CreateRG'
 
           - task: PowerShell@2
+            name: ParseParams
             inputs:
               filePath: 'scripts/ReadOutputParameters.ps1'
               arguments: '-armOutputString ''$(armOutputString)'''
@@ -137,6 +138,8 @@ stages:
 
       - deployment: RegisterDNS
         dependsOn: ARMDeploy
+        variables:
+         guid: $[ dependencies.ARMDeploy.outputs['ParseParams.Output_guid'] ]
         displayName: "Register DNS Records"
         environment: 
          name: Dev
