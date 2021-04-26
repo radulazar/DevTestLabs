@@ -140,30 +140,22 @@ stages:
                 Write-Output $objVMs | ft
               azurePowerShellVersion: 'LatestVersion'
 
+      - ${{ if eq(parameters.RunRegisterDNS, true) }}:
+        - deployment: RegisterDNS
+          dependsOn: ARMDeploy
+          variables:
+           guid: $[ dependencies.ARMDeploy.outputs['ParseParams.Output_guid'] ]
+          displayName: "Register DNS Records"
+          environment: 
+           name: Dev
+           resourceType: VirtualMachine
+          strategy:
+            runOnce:
+              deploy:
+                steps:
+                - checkout: self
+                - script: echo $(guid)
 
-      - deployment: RegisterDNS
-        dependsOn: ARMDeploy
-        variables:
-         guid: $[ dependencies.ARMDeploy.outputs['ParseParams.Output_guid'] ]
-        displayName: "Register DNS Records"
-        environment: 
-         name: Dev
-         resourceType: VirtualMachine
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-              - checkout: self
-              - script: echo $(guid)
-
-              - task: CopyFiles@2
-                inputs:
-                 SourceFolder: '$(Build.SourcesDirectory)'
-                 Contents: '**'
-                 TargetFolder: 'c:\build\'
-
-
-              - ${{ if eq(parameters.RunRegisterDNS, true) }}:
                 - task: AzurePowerShell@5
                   inputs:
                     azureSubscription: 'MCT'
