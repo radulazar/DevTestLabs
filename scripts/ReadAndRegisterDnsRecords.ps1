@@ -2,42 +2,42 @@ param(
     [string]$guid,
     [string]$DnsZoneName = 'test.zone'
 )
-# DNS zone to be created inside $DnsZoneName
-Write-Output $DnsZoneName
-$DnsZoneName = 'test.zone'
-$guidDNSZoneName = $guid + "." + $DnsZoneName
-# for stand-alone DNS server
-$guidDNSZoneFile = $boxZone + ".dns"
 
+$guidDNSZoneName = $guid + "." + $DnsZoneName
 
 # Auth to Azure
 #Install-Module Az
 #Connect-AzAccount -DeviceCode
 #Get-AzContext
 
+# file is required for stand-alone DNS server, not AD integrated
+$guidDNSZoneFile = $guid + ".dns"
+$rg = $guid + '.rg'
+$VmPublicIpAddress = @{}   
+$pend = Get-AzPrivateEndpoint -ResourceGroupName $rg
+$nicIds = $pend.NetworkInterfaces.id
+ForEach ($nicId in $nicIds){
+  $nic = Get-AzNetworkInterface -ResourceId $nicId
+  $VmPublicIpAddress.Add($nic.Tag.vm,$nic.IpConfigurations.PrivateIPAddress) 
+  }
+Write-Output 'DNS Records to be created:'
+Write-Output $VmPublicIpAddress
 
-function read-Azure-records{
-param([string] $guid)
-
-$pendp_Resources = Get-AzResource -Tag @{ "env" = $guid} -ResourceType "Microsoft.Network/privateEndpoints" 
-# array of hashtables with vm & IP information to be added to DNS, one hastable object per DNS record
-$arrayDnsRecords = @()
-foreach ($pendp_Resource in $pendp_Resources){
-    $pendp_Nic = (Get-AzPrivateEndpoint -Name $pendp_Resource.Name).NetworkInterfaces[0]
-    $nicObj = Get-AzNetworkInterface -ResourceId $pendp_Nic.Id
-    $arrayDnsRecords +=(@{"vm" = $nicObj.Tag.vm; "IP" = $nicObj.IpConfigurations[0].PrivateIpAddress})
+# Get DNS Zones in local DNS Server
+$Zones = Get-DnsServerZone
+$ZoneNames = $Zones.ZoneName
+if ($ZoneNames.Contains($guidDNSZoneName) -eq $false){
+  Write-Output 'Creating DNS Zone'
+  Add-DnsServerPrimaryZone -Name $guidDNSZoneName -zonefile $guidDNSZoneFile
+  Write-Output 'Creating DNS Records'
+  $VmPublicIpAddress.keys | ForEach-Object{
+    Add-DnsServerResourceRecordA -ZoneName $guidDNSZoneName -Name $_ -IPv4Address $VmPublicIpAddress[$_] -computername localhost -CreatePtr
     }
-return $arrayDnsRecords
-}
+  }
+else {
+  Write-Output "Zone $guidDNSZoneName exists. Zone and records will not be created"    
+  }
 
-## Get info from Azure and register in onprem DNS
-$DnsRecords = read-Azure-records($guid)
-
-# create DNS zone for the environment
-Add-DnsServerPrimaryZone -Name $guidDNSZoneName -zonefile $guidDNSZoneFile
-
-foreach ($DnsRecord in $DnsRecords){
-    Add-DnsServerResourceRecordA -ZoneName $guidDNSZoneName -Name $DnsRecord.vm -IPv4Address $DnsRecord.IP -computername localhost -CreatePtr   
-}
-# list created records
-Get-DnsServerResourceRecord -ZoneName $guidDNSZoneName -RRType A
+Start-Sleep -s 10
+Write-Output 'Listing DNS records in zone Type:A'
+Get-DnsServerResourceRecord -ZoneName $guidDNSZoneName -RRType A | format-Table
