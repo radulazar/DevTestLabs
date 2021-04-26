@@ -10,6 +10,6 @@ A set of ARM templates to deploy a dev&test environment made of:
     VM's IP: 10.0.0.VMIndex_from_vmlist.csv. 
  - each environment is created in its own Resource Group
  - an Azure Private Link & Private Endpoint is created from an existing vnet to each VM in each environment. A load balancer is put in front of each environment (cannot put a private link directly into a vnet, it requires a PaaS service or load balancer)
- - $srv.$guid.$dnszone DNS records are created pointing to the Azure Private Endpoint IPs from the existing vNet. 
+ - $srv.$guid.$dnszone DNS records are created pointing to the Azure Private Endpoint IPs from the existing vNet. DNS registration is done from an on-premise server (In Azure Pipeline, the tasks in run as a deployment in an environment/virtualmachine)
 
  ![alt text](DevBox.png)
