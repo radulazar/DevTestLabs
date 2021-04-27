@@ -2,7 +2,7 @@ Connect-AzAccount
 Get-AzContext
 Get-AzSubscription
 
-# where endpoints are created. Each VM receive a NAT-ed IP in this subnet  
+# Existing virtual network where endpoints are created. Each VM receive a NAT-ed IP in this subnet  
 $endpointVirtualNetwork = "OnPremConnect-vNet"
 $endpointVirtualNetworkSubnet = "192.168.1.0_24"
 $subnetId = (Get-AzVirtualNetwork -name $endpointVirtualNetwork | Get-AzVirtualNetworkSubnetConfig -name $endpointVirtualNetworkSubnet).Id
